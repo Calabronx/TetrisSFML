@@ -23,7 +23,7 @@ private:
 	static const float		PlayerSpeed;
 	static const sf::Time		TimePerFrame;
 
-	sf::CircleShape			mPlayer;
+	sf::RectangleShape		mPlayer;
 	sf::RenderWindow		mWindow;
 	bool					mIsMovingUp;
 	bool					mIsMovingDown;

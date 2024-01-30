@@ -1,17 +1,25 @@
 #include "Application.h"
+#include <iostream>
 
 const float Application::PlayerSpeed = 100.f;
 const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Application::Application()
-    :mWindow(sf::VideoMode(800, 800), "Window Title", sf::Style::Close)
+    :mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
     , mPlayer()
     , mIsMovingUp(false)
     , mIsMovingDown(false)
+    , mIsMovingLeft(false)
+    , mIsMovingRight(false)
 {
-    mPlayer.setRadius(40.f);
-    mPlayer.setPosition(100.f, 100.f);
-    mPlayer.setFillColor(sf::Color::Cyan);
+    //mPlayer.setRadius(40.f);
+    mPlayer.setSize(sf::Vector2f(100, 50));
+    mPlayer.setOutlineColor(sf::Color::Black);
+    mPlayer.setFillColor(sf::Color::Yellow);
+
+    mPlayer.setOutlineThickness(5);
+    mPlayer.setPosition(300.f, 100.f);
+    //mPlayer.setFillColor(sf::Color::Cyan);
 }
 
 void Application::run()
@@ -80,9 +88,12 @@ void Application::processEvents()
 void Application::update(sf::Time dt)
 {
     sf::Vector2f movement(0.f, 0.f);
-    if (mIsMovingUp)
-        movement.y -= PlayerSpeed;
-    if (mIsMovingDown)
+    sf::Vector2f pos = mPlayer.getPosition();
+    const float MAX_FLOOR = 525.649f;
+
+   /* if (mIsMovingUp)
+        movement.y -= PlayerSpeed;*/
+    if (pos.y < MAX_FLOOR)
         movement.y += PlayerSpeed;
     if (mIsMovingRight)
         movement.x += PlayerSpeed;
@@ -90,6 +101,8 @@ void Application::update(sf::Time dt)
         movement.x -= PlayerSpeed;
 
     mPlayer.move(movement * dt.asSeconds());
+    //MAX 521.649
+    //std::cout << pos.y << std::endl;
 }
 
 void Application::render()
