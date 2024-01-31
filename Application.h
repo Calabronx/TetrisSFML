@@ -23,12 +23,15 @@ private:
 	static const float		PlayerSpeed;
 	static const sf::Time		TimePerFrame;
 
+	std::vector<sf::RectangleShape> mTetrominos;
+
 	sf::RectangleShape		mPlayer;
 	sf::RenderWindow		mWindow;
 	bool					mIsMovingUp;
 	bool					mIsMovingDown;
 	bool					mIsMovingRight;
 	bool					mIsMovingLeft;
+	bool					mIsFloor;
 
 };
 #endif // !APPLICATION_H
