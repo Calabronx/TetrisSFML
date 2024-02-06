@@ -24,8 +24,11 @@ private:
 	static const sf::Time		TimePerFrame;
 
 	std::vector<sf::RectangleShape> mTetrominos;
+	std::vector<sf::RectangleShape> mTetrominosReached;
+
 
 	sf::RectangleShape		mPlayer;
+	sf::RectangleShape		mTetromino;
 	sf::RenderWindow		mWindow;
 	bool					mIsMovingUp;
 	bool					mIsMovingDown;

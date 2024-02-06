@@ -4,6 +4,7 @@
 const float Application::PlayerSpeed = 100.f;
 const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
+
 Application::Application()
 	:mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
 	, mPlayer()
@@ -21,6 +22,17 @@ Application::Application()
 	mPlayer.setOutlineThickness(5);
 	mPlayer.setPosition(300.f, 100.f);
 	//mPlayer.setFillColor(sf::Color::Cyan);
+
+	for (int i = 0; i < 10; i++) {
+		sf::RectangleShape tetromino;
+		tetromino.setSize(sf::Vector2f(100, 30));
+		tetromino.setOutlineColor(sf::Color::Black);
+		tetromino.setFillColor(sf::Color::Red);
+		tetromino.setOutlineThickness(5);
+		tetromino.setPosition(300.f, i + 50.f);
+		mTetrominos.push_back(tetromino);
+	}
+
 }
 
 void Application::run()
@@ -86,46 +98,65 @@ void Application::processEvents()
 	}
 }
 
+
+/**
+	begin
+		iterar por cada tetromino
+			mover hacia el piso
+				si llega al piso
+					setear bandera isFloor
+					actualizar index del vector
+					agregar a lista de tetrominos inactivos
+					dibujar nuevo tetromino
+					controlar tetromino
+	end
+**/
+
+int i = 0;
 void Application::update(sf::Time dt)
 {
-	sf::Vector2f movement(0.f, 0.f);
-	sf::Vector2f pos = mPlayer.getPosition();
-	const float MAX_FLOOR = 525.649f;
+	if (i < mTetrominos.size()) {
+		sf::Vector2f movement(0.f, 0.f);
+		sf::Vector2f pos = mTetrominos[i].getPosition();
 
-	/* if (mIsMovingUp)
-		 movement.y -= PlayerSpeed;*/
-	if (pos.y < MAX_FLOOR)
-		movement.y += PlayerSpeed;
-	if (mIsMovingRight)
-		movement.x += PlayerSpeed;
-	if (mIsMovingLeft)
-		movement.x -= PlayerSpeed;
+		const float MAX_FLOOR = 525.649f;
 
-	if (pos.y >= MAX_FLOOR) {
-		mIsFloor = true;
-		sf::RectangleShape tetromino;
-		tetromino.setSize(sf::Vector2f(100, 50));
-		tetromino.setOutlineColor(sf::Color::Black);
-		tetromino.setFillColor(sf::Color::Red);
-		tetromino.move(movement * dt.asSeconds());
-		tetromino.setOutlineThickness(5);
-		tetromino.setPosition(300.f, 100.f);
-		mTetrominos.push_back(mPlayer);
+		if (pos.y < MAX_FLOOR) {
+			movement.y += PlayerSpeed;
+			if (mIsMovingRight)
+				movement.x += PlayerSpeed;
+			if (mIsMovingLeft)
+				movement.x -= PlayerSpeed;
+		}
 
+		if (pos.y >= MAX_FLOOR) {
+			mIsFloor = true;
+			movement.x = 0;
+			movement.y = 0;
+			mTetrominosReached.push_back(mTetrominos[i]);
+			std::cout << "size: " << mTetrominosReached.size() << std::endl;
+			i++;
+		}
+		mTetrominos[i].move(movement * dt.asSeconds());
 	}
-	
-	std::cout << pos.y << std::endl;
-	std::cout << mTetrominos.size() << std::endl;
 
+	//std::cout << pos.y << std::endl;
 
-	mPlayer.move(movement * dt.asSeconds());
 	//MAX 521.649
 }
 
 void Application::render()
 {
 	mWindow.clear(sf::Color(18, 33, 43)); // Color background
-	mWindow.draw(mPlayer);
+	//mWindow.draw(mPlayer);
+
+	if (i < mTetrominos.size()) {
+		mWindow.draw(mTetrominos[i]);
+	}
+
+	for (int i = 0; i < mTetrominosReached.size(); i++)
+		mWindow.draw(mTetrominosReached[i]);
+
 	mWindow.display();
 }
 
@@ -139,14 +170,12 @@ void Application::registerStates()
 
 void Application::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 {
-	if (!mIsFloor) {
-		if (key == sf::Keyboard::W)
-			mIsMovingUp = isPressed;
-		else if (key == sf::Keyboard::S)
-			mIsMovingDown = isPressed;
-		else if (key == sf::Keyboard::A)
-			mIsMovingLeft = isPressed;
-		else if (key == sf::Keyboard::D)
-			mIsMovingRight = isPressed;
-	}
+	if (key == sf::Keyboard::W)
+		mIsMovingUp = isPressed;
+	else if (key == sf::Keyboard::S)
+		mIsMovingDown = isPressed;
+	else if (key == sf::Keyboard::A)
+		mIsMovingLeft = isPressed;
+	else if (key == sf::Keyboard::D)
+		mIsMovingRight = isPressed;
 }
