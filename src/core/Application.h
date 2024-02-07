@@ -3,6 +3,7 @@
 #define APPLICATION_H
 
 #include<SFML/Graphics.hpp>
+#include "../entities/Tetromino.h"
 
 class Application
 {
@@ -23,8 +24,8 @@ private:
 	static const float		PlayerSpeed;
 	static const sf::Time		TimePerFrame;
 
-	std::vector<sf::RectangleShape> mTetrominos;
-	std::vector<sf::RectangleShape> mTetrominosReached;
+	std::vector<std::unique_ptr<Tetromino>> mTetrominos;
+	std::vector<std::unique_ptr<Tetromino>> mTetrominosReached;
 
 
 	sf::RectangleShape		mPlayer;

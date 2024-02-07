@@ -22,24 +22,39 @@
     <Filter Include="Source Files\src\input">
       <UniqueIdentifier>{4055f5bf-46d7-4bfd-80ff-f4cb486b4092}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\entities">
+      <UniqueIdentifier>{fca24f47-976a-4ae6-b2f4-a97a4c030220}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source Files\src\core</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files\src\input</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\Application.cpp">
+      <Filter>Source Files\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Entity.cpp">
+      <Filter>Source Files\src\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities\Tetromino.cpp">
+      <Filter>Source Files\src\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h">
-      <Filter>Source Files\src\core</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Source Files\src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\Application.h">
+      <Filter>Source Files\src\core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\Entity.h">
+      <Filter>Source Files\src\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entities\Tetromino.h">
+      <Filter>Source Files\src\entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
