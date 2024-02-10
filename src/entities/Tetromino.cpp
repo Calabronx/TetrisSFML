@@ -4,20 +4,13 @@ Tetromino::Tetromino()
 {
 }
 
-Tetromino::Tetromino(sf::Vector2f position, sf::Vector2f size, sf::Color color)
-	: mShape()
-	, mPosition(position)
-	, mSize(size)
-	, mColor(color)
-
+Tetromino::Tetromino(std::array<sf::Vertex, 8> vertices)
+	: mShape(sf::TriangleFan)
+	, mVertices(vertices)
 {
-	mShape.setSize(sf::Vector2f(100, 30));
-	mShape.setOutlineColor(sf::Color::Black);
-	mShape.setFillColor(mColor);
-	mShape.setOutlineThickness(5);
-	mShape.setPosition(300.f, 50.f);
-
-	//TetrominoStruct *tr = new TetrominoStruct();
+	for (auto i = 0; i < mVertices.size(); i++) {
+		mShape.append(mVertices[i]);
+	}
 }
 
 void Tetromino::rotate()

@@ -19,6 +19,7 @@ private:
 	void updateStatistics(sf::Time dt);
 	void registerStates();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+	void moveVertexArray(sf::VertexArray& vertexArray, sf::Vector2f offset, sf::Time dt);
 
 private:
 	static const float		PlayerSpeed;

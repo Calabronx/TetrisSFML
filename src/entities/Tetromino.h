@@ -3,43 +3,38 @@
 #define TETROMINO_H
 
 #include "Entity.h"
-
-/**
-	obj definir clase tetromino para extender y manejar
-	los datos de un tetromino
-	sus funcionalidades
-	
-	attributos:
-		sprite
-		color
-		tamaño
-
-		tipo(forma)
-
-	funcionalidad
-	rotar
-**/
+#include <array>
 
 class Tetromino : public Entity
 {
 
 public:
-	//struct TetrominoStruct {
-	//	sf::RectangleShape sprite;
-	//	sf::Color color;
-	//	int size;
-	//};
+
+	enum TetrominoID {
+		T,
+		L,
+		J,
+		O,
+		S,
+		Z
+	};
+
+	struct TetrominoStruct {
+		std::array<sf::Vertex, 8> vertices;
+		sf::Color color;
+	};
 
 public:
 	explicit								Tetromino();
-										Tetromino(sf::Vector2f position, sf::Vector2f size, sf::Color color);
-	sf::RectangleShape  mShape;
-	sf::Vector2f		mPosition;
+										Tetromino(std::array<sf::Vertex, 8> vertices);
+	sf::VertexArray					mShape;
+	sf::Vector2f					mPosition;
+	std::array<sf::Vertex, 8>		mVertices;
 
 private:
 
-	void rotate();
-	void destroy();
+	void					rotate();
+	void					destroy();
 
 private:
 	sf::Vector2f		mSize;

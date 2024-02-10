@@ -1,9 +1,15 @@
 #include "Application.h"
 #include <iostream>
+#include <array>
 #include "../entities/Tetromino.h"
 
 const float Application::PlayerSpeed = 100.f;
 const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
+
+std::array<sf::Vertex, 8> arrVertices;
+
+sf::VertexArray lShape(sf::TriangleFan);
+sf::VertexArray tShape(sf::TriangleFan);
 
 
 Application::Application()
@@ -26,11 +32,24 @@ Application::Application()
 
 	const int tetrominosCounter = 30;
 
-	for (int i = 0; i < tetrominosCounter; i++) {
-		sf::Color color(120 * i+1, 50 * i, 50 * i);
-		std::unique_ptr<Tetromino> tetromino(new Tetromino(sf::Vector2f(100, 30), sf::Vector2f(100, 30), color));
-		mTetrominos.push_back(std::move(tetromino));
-	}
+	sf::Vertex vertex1(sf::Vector2f(25, 25), sf::Color::Red);
+	sf::Vertex vertex2(sf::Vector2f(25, 75), sf::Color::Red);
+	sf::Vertex vertex3(sf::Vector2f(0, 75), sf::Color::Red);
+	sf::Vertex vertex4(sf::Vector2f(0, 50), sf::Color::Red);
+	sf::Vertex vertex5(sf::Vector2f(0, 25), sf::Color::Red);
+
+	sf::Vertex vertex6(sf::Vector2f(0, 0), sf::Color::Red);
+	sf::Vertex vertex7(sf::Vector2f(50, 0), sf::Color::Red);
+	sf::Vertex vertex8(sf::Vector2f(50, 25), sf::Color::Red);
+
+	arrVertices = { 
+		vertex1, vertex2, vertex3,
+		vertex4, vertex5, vertex6,
+		vertex7, vertex8 
+	};
+
+	std::unique_ptr<Tetromino>tetromino(new Tetromino(arrVertices));
+	mTetrominos.push_back(std::move(tetromino));
 
 }
 
@@ -112,26 +131,25 @@ void Application::processEvents()
 **/
 
 int i = 0;
+
 void Application::update(sf::Time dt)
 {
-
-
-	if (i < mTetrominos.size() - 1) {
+	if (i < mTetrominos.size()) {
 		sf::Vector2f movement(0.f, 0.f);
-		sf::Vector2f pos = mTetrominos[i]->mShape.getPosition();
-		Tetromino *tetromino = mTetrominos[i].get();
+		sf::Vector2f pos = mTetrominos[i]->mShape[i].position;
+		Tetromino* tetromino = mTetrominos[i].get();
 
-		const float MAX_FLOOR = 525.649f;
+		const float MAX_FLOOR = 540.649f;
 
 		if (pos.y < MAX_FLOOR) {
 			movement.y += PlayerSpeed;
 			tetromino->setVelocity(movement);
 			if (mIsMovingRight)
 				movement.x += PlayerSpeed;
-				tetromino->setVelocity(movement);
+			tetromino->setVelocity(movement);
 			if (mIsMovingLeft)
 				movement.x -= PlayerSpeed;
-				tetromino->setVelocity(movement);
+			tetromino->setVelocity(movement);
 		}
 
 		if (pos.y >= MAX_FLOOR) {
@@ -143,14 +161,12 @@ void Application::update(sf::Time dt)
 			i++;
 		}
 
-		tetromino->mShape.move(tetromino->getVelocity() * dt.asSeconds());
-		std::cout << pos.y << std::endl;
+		/*std::cout << mTetrominos.size() << std::endl;*/
+		if(i < mTetrominos.size())
+			moveVertexArray(mTetrominos[i]->mShape, movement, dt);
 	}
 
-
-	//MAX 521.649
 }
-
 
 /**
 	deberia manejar el vertex array para construir los tetrominos
@@ -167,30 +183,19 @@ void Application::render()
 
 	vertex.texCoords = sf::Vector2f(100.f, 100.f);
 
-	sf::VertexArray triangle(sf::Triangles, 3);
-
-	triangle[0].position = sf::Vector2f(10.f, 10.f);
-	triangle[1].position = sf::Vector2f(100.f, 10.f);
-	triangle[2].position = sf::Vector2f(100.f, 100.f);
-
-	triangle[0].color = sf::Color::Red;
-	triangle[1].color = sf::Color::Blue;
-	triangle[2].color = sf::Color::Green;
+	//std::cout << mTetrominos.size() << std::endl;
+	//sf::VertexArray triangle(sf::Triangles, 3);
 
 	//sf::Vertex vertex(sf::Vector2f(10.f, 50.f), sf::Color::Red, sf::Vector2f(100.f, 100.f)); tambien asi
 
 	mWindow.clear(sf::Color(18, 33, 43)); // Color background
-	//mWindow.draw(mPlayer);
+
 	if (i < mTetrominos.size()) {
 		mWindow.draw(mTetrominos[i]->mShape);
 	}
-
 	for (int i = 0; i < mTetrominosReached.size(); i++)
 		mWindow.draw(mTetrominosReached[i]->mShape);
 
-	//mWindow.draw(triangleFan);
-	//mWindow.draw(quads);
-	mWindow.draw(triangle);
 	mWindow.display();
 }
 
@@ -212,4 +217,11 @@ void Application::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		mIsMovingLeft = isPressed;
 	else if (key == sf::Keyboard::D)
 		mIsMovingRight = isPressed;
+}
+
+void Application::moveVertexArray(sf::VertexArray& vertexArray, sf::Vector2f offset, sf::Time dt)
+{
+	for (std::size_t i = 0; i < vertexArray.getVertexCount(); i++) {
+		vertexArray[i].position += offset * dt.asSeconds();
+	}
 }
