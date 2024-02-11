@@ -142,12 +142,14 @@
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\entities\Entity.cpp" />
     <ClCompile Include="src\entities\Tetromino.cpp" />
+    <ClCompile Include="src\util\DataTables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\entities\Entity.h" />
     <ClInclude Include="src\entities\Tetromino.h" />
+    <ClInclude Include="src\util\DataTables.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

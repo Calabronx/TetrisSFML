@@ -1,12 +1,18 @@
 #include "Tetromino.h"
+#include "../util/DataTables.h"
+
+namespace {
+	const std::vector<TetrominoData> TetrominoTable = initializeTetrominoData();
+}
 
 Tetromino::Tetromino()
 {
 }
 
-Tetromino::Tetromino(std::array<sf::Vertex, 8> vertices)
+Tetromino::Tetromino(Type type)
 	: mShape(sf::TriangleFan)
-	, mVertices(vertices)
+	, mType(type)
+	, mVertices(TetrominoTable[type].vertices)
 {
 	for (auto i = 0; i < mVertices.size(); i++) {
 		mShape.append(mVertices[i]);

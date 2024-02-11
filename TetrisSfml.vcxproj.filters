@@ -25,6 +25,9 @@
     <Filter Include="Source Files\src\entities">
       <UniqueIdentifier>{fca24f47-976a-4ae6-b2f4-a97a4c030220}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\util">
+      <UniqueIdentifier>{2ba35a22-ceb7-4ed9-bde3-542ab7db2c03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,6 +45,9 @@
     <ClCompile Include="src\entities\Tetromino.cpp">
       <Filter>Source Files\src\entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\DataTables.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -55,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="src\entities\Tetromino.h">
       <Filter>Source Files\src\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\DataTables.h">
+      <Filter>Source Files\src\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

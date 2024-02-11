@@ -6,12 +6,6 @@
 const float Application::PlayerSpeed = 100.f;
 const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
-std::array<sf::Vertex, 8> arrVertices;
-
-sf::VertexArray lShape(sf::TriangleFan);
-sf::VertexArray tShape(sf::TriangleFan);
-
-
 Application::Application()
 	:mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
 	, mPlayer()
@@ -32,24 +26,17 @@ Application::Application()
 
 	const int tetrominosCounter = 30;
 
-	sf::Vertex vertex1(sf::Vector2f(25, 25), sf::Color::Red);
-	sf::Vertex vertex2(sf::Vector2f(25, 75), sf::Color::Red);
-	sf::Vertex vertex3(sf::Vector2f(0, 75), sf::Color::Red);
-	sf::Vertex vertex4(sf::Vector2f(0, 50), sf::Color::Red);
-	sf::Vertex vertex5(sf::Vector2f(0, 25), sf::Color::Red);
+	std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
+	std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
+	std::unique_ptr<Tetromino>oShape(new Tetromino(Tetromino::O));
+	std::unique_ptr<Tetromino>sShape(new Tetromino(Tetromino::S));
+	std::unique_ptr<Tetromino>zShape(new Tetromino(Tetromino::Z));
 
-	sf::Vertex vertex6(sf::Vector2f(0, 0), sf::Color::Red);
-	sf::Vertex vertex7(sf::Vector2f(50, 0), sf::Color::Red);
-	sf::Vertex vertex8(sf::Vector2f(50, 25), sf::Color::Red);
-
-	arrVertices = { 
-		vertex1, vertex2, vertex3,
-		vertex4, vertex5, vertex6,
-		vertex7, vertex8 
-	};
-
-	std::unique_ptr<Tetromino>tetromino(new Tetromino(arrVertices));
-	mTetrominos.push_back(std::move(tetromino));
+	mTetrominos.push_back(std::move(lShape));
+	mTetrominos.push_back(std::move(tShape));
+	mTetrominos.push_back(std::move(oShape));
+	mTetrominos.push_back(std::move(sShape));
+	mTetrominos.push_back(std::move(zShape));
 
 }
 

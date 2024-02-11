@@ -30,7 +30,6 @@ private:
 
 
 	sf::RectangleShape		mPlayer;
-	sf::RectangleShape		mTetromino;
 	sf::RenderWindow		mWindow;
 	bool					mIsMovingUp;
 	bool					mIsMovingDown;

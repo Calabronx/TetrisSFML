@@ -10,26 +10,22 @@ class Tetromino : public Entity
 
 public:
 
-	enum TetrominoID {
-		T,
-		L,
-		J,
-		O,
-		S,
-		Z
-	};
-
-	struct TetrominoStruct {
-		std::array<sf::Vertex, 8> vertices;
-		sf::Color color;
+	enum Type
+	{
+			L,
+			T,
+			J,
+			O,
+			S,
+			Z
 	};
 
 public:
 	explicit								Tetromino();
-										Tetromino(std::array<sf::Vertex, 8> vertices);
+										Tetromino(Type type);
 	sf::VertexArray					mShape;
 	sf::Vector2f					mPosition;
-	std::array<sf::Vertex, 8>		mVertices;
+	std::array<sf::Vertex, 16>		mVertices;
 
 private:
 
@@ -39,6 +35,7 @@ private:
 private:
 	sf::Vector2f		mSize;
 	sf::Color			mColor;
+	Type				mType;
 
 };
 
