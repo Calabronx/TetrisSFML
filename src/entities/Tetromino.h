@@ -23,14 +23,15 @@ public:
 public:
 	explicit								Tetromino();
 										Tetromino(Type type);
+	sf::Transform				    mTransform;
 	sf::VertexArray					mShape;
 	sf::Vector2f					mPosition;
-	std::array<sf::Vertex, 16>		mVertices;
-
-private:
+	std::array<sf::Vertex, 8>		mVertices;
 
 	void					rotate();
 	void					destroy();
+private:
+
 
 private:
 	sf::Vector2f		mSize;

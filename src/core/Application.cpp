@@ -6,6 +6,14 @@
 const float Application::PlayerSpeed = 100.f;
 const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
+sf::Transform rotation;
+sf::Transform transform = rotation;
+sf::VertexArray triangle(sf::Triangles, 3);
+
+sf::Vector2f PointA(350.0f, 350.0f);
+sf::Vector2f PointB(250.0f, 340.0f);
+sf::Vector2f PointC(250.0f, 360.0f);
+
 Application::Application()
 	:mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
 	, mPlayer()
@@ -16,27 +24,68 @@ Application::Application()
 	, mIsFloor(false)
 {
 	//mPlayer.setRadius(40.f);
-	mPlayer.setSize(sf::Vector2f(100, 50));
-	mPlayer.setOutlineColor(sf::Color::Black);
-	mPlayer.setFillColor(sf::Color::Yellow);
+	//mPlayer.setSize(sf::Vector2f(100, 50));
+	//mPlayer.setOutlineColor(sf::Color::Black);
+	//mPlayer.setFillColor(sf::Color::Yellow);
 
-	mPlayer.setOutlineThickness(5);
-	mPlayer.setPosition(300.f, 100.f);
+	//mPlayer.setOutlineThickness(5);
+	//mPlayer.setPosition(300.f, 100.f);
 	//mPlayer.setFillColor(sf::Color::Cyan);
 
 	const int tetrominosCounter = 30;
 
-	std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-	std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
-	std::unique_ptr<Tetromino>oShape(new Tetromino(Tetromino::O));
-	std::unique_ptr<Tetromino>sShape(new Tetromino(Tetromino::S));
-	std::unique_ptr<Tetromino>zShape(new Tetromino(Tetromino::Z));
+	for (auto i = 0; i < tetrominosCounter; i++) {
+		int randomId = rand() % 5 + 1;
 
-	mTetrominos.push_back(std::move(lShape));
-	mTetrominos.push_back(std::move(tShape));
-	mTetrominos.push_back(std::move(oShape));
-	mTetrominos.push_back(std::move(sShape));
-	mTetrominos.push_back(std::move(zShape));
+		if (randomId == Tetromino::L) {
+			std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::T));
+			mTetrominos.push_back(std::move(lShape));
+		}
+		else if (randomId == Tetromino::T) {
+			std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
+			mTetrominos.push_back(std::move(tShape));
+		}
+		else if (randomId == Tetromino::O) {
+			std::unique_ptr<Tetromino>oShape(new Tetromino(Tetromino::O));
+			mTetrominos.push_back(std::move(oShape));
+		}
+		else if (randomId == Tetromino::S) {
+			std::unique_ptr<Tetromino>sShape(new Tetromino(Tetromino::S));
+			mTetrominos.push_back(std::move(sShape));
+
+		}
+		else if (randomId == Tetromino::Z) {
+			std::unique_ptr<Tetromino>zShape(new Tetromino(Tetromino::Z));
+			mTetrominos.push_back(std::move(zShape));
+		}
+		else {
+			std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
+			mTetrominos.push_back(std::move(lShape));
+		}
+		//switch (randomId) {
+		//case Tetromino::L:
+		//	lShape(new Tetromino(Tetromino::T));
+		//	break;
+		//case Tetromino::T:
+		//	//std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
+		//	break;
+		//default:
+		//	break;
+		//}
+	}
+	//testRotation();
+
+	//rotation.rotate(10.0f);
+
+	//transform = rotation;
+
+	//triangle[0].position = PointA;
+	//triangle[1].position = PointB;
+	//triangle[2].position = PointC;
+
+	//triangle[0].color = sf::Color::Blue;
+	//triangle[1].color = sf::Color::Blue;
+	//triangle[2].color = sf::Color::Blue;
 
 }
 
@@ -119,6 +168,7 @@ void Application::processEvents()
 
 int i = 0;
 
+
 void Application::update(sf::Time dt)
 {
 	if (i < mTetrominos.size()) {
@@ -137,7 +187,28 @@ void Application::update(sf::Time dt)
 			if (mIsMovingLeft)
 				movement.x -= PlayerSpeed;
 			tetromino->setVelocity(movement);
+			if (mIsMovingDown)
+				movement.y += PlayerSpeed;
+			tetromino->setVelocity(movement);
+
+			//if (mIsRotating)
+			//	//movement.y += PlayerSpeed;
+			//	//tetromino->rotate();
+			//	transform = rotation.rotate(0.1f);
+			//tetromino->setVelocity(movement);
+
+
 		}
+
+		//sf::Vector2f Point_BP = transform.transformPoint(PointB);
+		//sf::Vector2f Point_CP = transform.transformPoint(PointC);
+
+		//triangle[1].position = Point_BP;
+		//triangle[2].position = Point_CP;
+
+		//triangle[0].color = sf::Color(0, 0, 255, 20);
+		//triangle[1].color = sf::Color::Blue;
+		//triangle[0].color = sf::Color::Blue;
 
 		if (pos.y >= MAX_FLOOR) {
 			mIsFloor = true;
@@ -148,8 +219,12 @@ void Application::update(sf::Time dt)
 			i++;
 		}
 
+
+
+
+
 		/*std::cout << mTetrominos.size() << std::endl;*/
-		if(i < mTetrominos.size())
+		if (i < mTetrominos.size())
 			moveVertexArray(mTetrominos[i]->mShape, movement, dt);
 	}
 
@@ -162,19 +237,6 @@ void Application::update(sf::Time dt)
 **/
 void Application::render()
 {
-	sf::Vertex vertex;
-
-	vertex.position = sf::Vector2f(10.f, 50.f);
-
-	vertex.color = sf::Color::Red;
-
-	vertex.texCoords = sf::Vector2f(100.f, 100.f);
-
-	//std::cout << mTetrominos.size() << std::endl;
-	//sf::VertexArray triangle(sf::Triangles, 3);
-
-	//sf::Vertex vertex(sf::Vector2f(10.f, 50.f), sf::Color::Red, sf::Vector2f(100.f, 100.f)); tambien asi
-
 	mWindow.clear(sf::Color(18, 33, 43)); // Color background
 
 	if (i < mTetrominos.size()) {
@@ -183,6 +245,7 @@ void Application::render()
 	for (int i = 0; i < mTetrominosReached.size(); i++)
 		mWindow.draw(mTetrominosReached[i]->mShape);
 
+	//mWindow.draw(triangle);
 	mWindow.display();
 }
 
@@ -204,6 +267,13 @@ void Application::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		mIsMovingLeft = isPressed;
 	else if (key == sf::Keyboard::D)
 		mIsMovingRight = isPressed;
+
+	else if (key == sf::Keyboard::Z)
+		mIsRotating = isPressed;
+
+	/*else if (key == sf::Keyboard::Escape)
+		std::cout << "QUITTING GAME..." << std::endl;
+		exit(0);*/
 }
 
 void Application::moveVertexArray(sf::VertexArray& vertexArray, sf::Vector2f offset, sf::Time dt)
@@ -211,4 +281,24 @@ void Application::moveVertexArray(sf::VertexArray& vertexArray, sf::Vector2f off
 	for (std::size_t i = 0; i < vertexArray.getVertexCount(); i++) {
 		vertexArray[i].position += offset * dt.asSeconds();
 	}
+}
+
+void testRotation() {
+	rotation.rotate(10.0f);
+
+	transform = rotation;
+
+	//sf::Vector2f PointA(350.0f, 350.0f);
+	//sf::Vector2f PointB(250.0f, 340.0f);
+	//sf::Vector2f PointC(250.0f, 360.0f);
+
+	triangle[0].position = PointA;
+	triangle[1].position = PointB;
+	triangle[2].position = PointC;
+
+	triangle[0].color = sf::Color::Blue;
+	triangle[1].color = sf::Color::Blue;
+	triangle[2].color = sf::Color::Blue;
+
+
 }

@@ -16,7 +16,7 @@ std::vector<TetrominoData> initializeTetrominoData()
 	sf::Vertex lShapevrtx7(sf::Vector2f(50, 0), sf::Color::Red);
 	sf::Vertex lShapevrtx8(sf::Vector2f(50, 25), sf::Color::Red);
 
-	std::array<sf::Vertex, 16> lVertices = {
+	std::array<sf::Vertex, 8> lVertices = {
 		lShapevrtx1, lShapevrtx2, lShapevrtx3,
 		lShapevrtx4, lShapevrtx5, lShapevrtx6,
 		lShapevrtx7, lShapevrtx8
@@ -34,7 +34,7 @@ std::vector<TetrominoData> initializeTetrominoData()
 	sf::Vertex tShapeVrtx7(sf::Vector2f(50, 50), sf::Color::Blue);
 	sf::Vertex tShapeVrtx8(sf::Vector2f(25, 50), sf::Color::Blue);
 
-	std::array<sf::Vertex, 16> tVertices = {
+	std::array<sf::Vertex, 8> tVertices = {
 		tShapeVrtx1, tShapeVrtx2, tShapeVrtx3,
 		tShapeVrtx4, tShapeVrtx5, tShapeVrtx6,
 		tShapeVrtx7, tShapeVrtx8
@@ -52,7 +52,7 @@ std::vector<TetrominoData> initializeTetrominoData()
 	sf::Vertex squareShapeVrtx7(sf::Vector2f(50, 50), sf::Color::Yellow);
 	sf::Vertex squareShapeVrtx8(sf::Vector2f(50, 0), sf::Color::Yellow);
 
-	std::array<sf::Vertex, 16> squareVertices = {
+	std::array<sf::Vertex, 8> squareVertices = {
 		squareShapeVrtx1, squareShapeVrtx2, squareShapeVrtx3,
 		squareShapeVrtx4, squareShapeVrtx5, squareShapeVrtx6,
 		squareShapeVrtx7, squareShapeVrtx8
@@ -71,37 +71,33 @@ std::vector<TetrominoData> initializeTetrominoData()
 	//sf::Vertex squareShapeVrtx7(sf::Vector2f(50, 50), sf::Color::Yellow);
 	//sf::Vertex squareShapeVrtx8(sf::Vector2f(50, 0), sf::Color::Yellow);
 
-	std::array<sf::Vertex, 16> straightVertices = {
+	std::array<sf::Vertex, 8> straightVertices = {
 		straightShapeVrtx1, straightShapeVrtx2, straightShapeVrtx3,
 		straightShapeVrtx4, straightShapeVrtx5, straightShapeVrtx6
 	};
 
 	data[Tetromino::S].vertices = straightVertices;
 
-	sf::Vertex skewShapeVrtx1(sf::Vector2f(37, 37), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx2(sf::Vector2f(25, 75), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx3(sf::Vector2f(50, 75), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx4(sf::Vector2f(50, 50), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx5(sf::Vector2f(75, 50), sf::Color::Cyan);
+	sf::Vertex skewShapeVrtx1(sf::Vector2f(50, 75), sf::Color::Green);
+	sf::Vertex skewShapeVrtx2(sf::Vector2f(25, 100), sf::Color::Green);
+	sf::Vertex skewShapeVrtx3(sf::Vector2f(50, 100), sf::Color::Green);
 
-	sf::Vertex skewShapeVrtx6(sf::Vector2f(75, 25), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx7(sf::Vector2f(50, 25), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx8(sf::Vector2f(50, 50), sf::Color::Cyan);
+	sf::Vertex skewShapeVrtx4(sf::Vector2f(75, 100), sf::Color::Green);
 
-	sf::Vertex skewShapeVrtx9(sf::Vector2f(25, 50), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx10(sf::Vector2f(25, 25), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx11(sf::Vector2f(0, 25), sf::Color::Cyan);
-	sf::Vertex skewShapeVrtx12(sf::Vector2f(0, 50), sf::Color::Cyan);
+	sf::Vertex skewShapeVrtx5(sf::Vector2f(75, 75), sf::Color::Green);
+	sf::Vertex skewShapeVrtx6(sf::Vector2f(75, 50), sf::Color::Green);
+	sf::Vertex skewShapeVrtx7(sf::Vector2f(50, 50), sf::Color::Green);
+
+	sf::Vertex skewShapeVrtx8(sf::Vector2f(25, 75), sf::Color::Green);
 
 
 	//sf::Vertex squareShapeVrtx7(sf::Vector2f(50, 50), sf::Color::Yellow);
 	//sf::Vertex squareShapeVrtx8(sf::Vector2f(50, 0), sf::Color::Yellow);
 
-	std::array<sf::Vertex, 16> skewVertices = {
+	std::array<sf::Vertex, 8> skewVertices = {
 		skewShapeVrtx1, skewShapeVrtx2, skewShapeVrtx3,
 		skewShapeVrtx4, skewShapeVrtx5, skewShapeVrtx6,
-		skewShapeVrtx7, skewShapeVrtx8, skewShapeVrtx9,
-		skewShapeVrtx10, skewShapeVrtx11, skewShapeVrtx12
+		skewShapeVrtx7, skewShapeVrtx8
 	};
 
 	data[Tetromino::Z].vertices = skewVertices;

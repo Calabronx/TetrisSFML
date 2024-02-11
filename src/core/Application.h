@@ -36,6 +36,7 @@ private:
 	bool					mIsMovingRight;
 	bool					mIsMovingLeft;
 	bool					mIsFloor;
+	bool					mIsRotating;
 
 };
 #endif // !APPLICATION_H
