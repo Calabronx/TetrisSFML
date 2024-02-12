@@ -13,6 +13,7 @@ public:
 
 private:
 	sf::Vector2f		mVelocity;
+	sf::Transform		mTransform;
 };
 #endif // !ENTITY_H
 

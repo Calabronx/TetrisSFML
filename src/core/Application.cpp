@@ -8,11 +8,6 @@ const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
 sf::Transform rotation;
 sf::Transform transform = rotation;
-sf::VertexArray triangle(sf::Triangles, 3);
-
-sf::Vector2f PointA(350.0f, 350.0f);
-sf::Vector2f PointB(250.0f, 340.0f);
-sf::Vector2f PointC(250.0f, 360.0f);
 
 Application::Application()
 	:mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
@@ -75,9 +70,14 @@ Application::Application()
 	}
 	//testRotation();
 
-	//rotation.rotate(10.0f);
+	rotation.rotate(10.0f);
 
-	//transform = rotation;
+	transform = rotation;
+
+	//mTetrominos[0]->mShape[0].position = PointA;
+	//mTetrominos[0]->mShape[1].position = PointB;
+	//mTetrominos[0]->mShape[2].position = PointC;
+
 
 	//triangle[0].position = PointA;
 	//triangle[1].position = PointB;
@@ -86,6 +86,7 @@ Application::Application()
 	//triangle[0].color = sf::Color::Blue;
 	//triangle[1].color = sf::Color::Blue;
 	//triangle[2].color = sf::Color::Blue;
+
 
 }
 
@@ -167,38 +168,34 @@ void Application::processEvents()
 **/
 
 int i = 0;
-
+int rotate = 45;
 
 void Application::update(sf::Time dt)
 {
 	if (i < mTetrominos.size()) {
 		sf::Vector2f movement(0.f, 0.f);
-		sf::Vector2f pos = mTetrominos[i]->mShape[i].position;
-		Tetromino* tetromino = mTetrominos[i].get();
+		sf::Transform rotation;
+		//rotation.rotate(rotate);
+		//rotate++;
+		sf::Transform transform = rotation;
 
+		sf::Vector2f pos = mTetrominos[i]->mShape[0].position;
+		Tetromino* tetromino = mTetrominos[i].get();
 		const float MAX_FLOOR = 540.649f;
 
 		if (pos.y < MAX_FLOOR) {
 			movement.y += PlayerSpeed;
-			tetromino->setVelocity(movement);
 			if (mIsMovingRight)
 				movement.x += PlayerSpeed;
-			tetromino->setVelocity(movement);
 			if (mIsMovingLeft)
 				movement.x -= PlayerSpeed;
-			tetromino->setVelocity(movement);
 			if (mIsMovingDown)
 				movement.y += PlayerSpeed;
-			tetromino->setVelocity(movement);
 
-			//if (mIsRotating)
-			//	//movement.y += PlayerSpeed;
-			//	//tetromino->rotate();
-			//	transform = rotation.rotate(0.1f);
-			//tetromino->setVelocity(movement);
-
-
+			if (mIsRotating)
+				transform = rotation.rotate(0.1f);
 		}
+		tetromino->setVelocity(movement);
 
 		//sf::Vector2f Point_BP = transform.transformPoint(PointB);
 		//sf::Vector2f Point_CP = transform.transformPoint(PointC);
@@ -210,6 +207,23 @@ void Application::update(sf::Time dt)
 		//triangle[1].color = sf::Color::Blue;
 		//triangle[0].color = sf::Color::Blue;
 
+	/*	sf::Vector2f PointA(20.f, 20.f);
+		sf::Vector2f PointB(20.f, 20.f);
+		sf::Vector2f PointC(20.f, 20.f);
+		sf::Vector2f*/
+
+		sf::Vector2f sum;
+
+		for (size_t index = 0; index < mTetrominos[i]->mShape.getVertexCount(); index++) {
+			float verticeX = mTetrominos[i]->mVertices[index].position.x;
+			float verticeY = mTetrominos[i]->mVertices[index].position.y;
+
+			sf::Vector2f point = mTetrominos[i]->mShape[index].position - center;
+			//movement = transform.transformPoint(point);
+			/*transform.rotate(0.1f);
+			transform.transformPoint(point);*/
+		}
+
 		if (pos.y >= MAX_FLOOR) {
 			mIsFloor = true;
 			movement.x = 0;
@@ -219,13 +233,9 @@ void Application::update(sf::Time dt)
 			i++;
 		}
 
-
-
-
-
 		/*std::cout << mTetrominos.size() << std::endl;*/
 		if (i < mTetrominos.size())
-			moveVertexArray(mTetrominos[i]->mShape, movement, dt);
+			moveVertexArray(mTetrominos[i]->mShape, tetromino->getVelocity(), dt);
 	}
 
 }
@@ -291,14 +301,5 @@ void testRotation() {
 	//sf::Vector2f PointA(350.0f, 350.0f);
 	//sf::Vector2f PointB(250.0f, 340.0f);
 	//sf::Vector2f PointC(250.0f, 360.0f);
-
-	triangle[0].position = PointA;
-	triangle[1].position = PointB;
-	triangle[2].position = PointC;
-
-	triangle[0].color = sf::Color::Blue;
-	triangle[1].color = sf::Color::Blue;
-	triangle[2].color = sf::Color::Blue;
-
 
 }

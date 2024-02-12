@@ -23,7 +23,7 @@ public:
 public:
 	explicit								Tetromino();
 										Tetromino(Type type);
-	sf::Transform				    mTransform;
+	sf::Transform					mRotation;
 	sf::VertexArray					mShape;
 	sf::Vector2f					mPosition;
 	std::array<sf::Vertex, 8>		mVertices;
