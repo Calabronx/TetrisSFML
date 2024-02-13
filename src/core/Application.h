@@ -20,6 +20,8 @@ private:
 	void registerStates();
 	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
 	void moveVertexArray(sf::VertexArray& vertexArray, sf::Vector2f offset, sf::Time dt);
+	void testRotation(sf::VertexArray& shape, float angleDegrees, const sf::Vector2f& center);
+	sf::Vector2f findCenter(const sf::VertexArray& shape);
 
 private:
 	static const float		PlayerSpeed;

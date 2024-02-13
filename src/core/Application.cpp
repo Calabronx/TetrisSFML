@@ -8,6 +8,7 @@ const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
 sf::Transform rotation;
 sf::Transform transform = rotation;
+sf::RectangleShape entity;
 
 Application::Application()
 	:mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
@@ -18,6 +19,10 @@ Application::Application()
 	, mIsMovingRight(false)
 	, mIsFloor(false)
 {
+	int centerScreen = mWindow.getSize().x / 2;
+	/*entity.setPosition(centerScreen, 50.0f);
+	entity.setFillColor(sf::Color::Yellow);
+	entity.setSize(sf::Vector2f(120, 120));*/
 	//mPlayer.setRadius(40.f);
 	//mPlayer.setSize(sf::Vector2f(100, 50));
 	//mPlayer.setOutlineColor(sf::Color::Black);
@@ -28,6 +33,7 @@ Application::Application()
 	//mPlayer.setFillColor(sf::Color::Cyan);
 
 	const int tetrominosCounter = 30;
+	sf::Vector2f centerShape(0.0f, 0.0f);
 
 	for (auto i = 0; i < tetrominosCounter; i++) {
 		int randomId = rand() % 5 + 1;
@@ -39,6 +45,7 @@ Application::Application()
 		else if (randomId == Tetromino::T) {
 			std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
 			mTetrominos.push_back(std::move(tShape));
+		
 		}
 		else if (randomId == Tetromino::O) {
 			std::unique_ptr<Tetromino>oShape(new Tetromino(Tetromino::O));
@@ -57,37 +64,25 @@ Application::Application()
 			std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
 			mTetrominos.push_back(std::move(lShape));
 		}
-		//switch (randomId) {
-		//case Tetromino::L:
-		//	lShape(new Tetromino(Tetromino::T));
-		//	break;
-		//case Tetromino::T:
-		//	//std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
-		//	break;
-		//default:
-		//	break;
-		//}
+
+		sf::Vector2f windowSize(600.f,600.f);
+		sf::Vector2f centerScreen = windowSize / 2.0f;
+
+		sf::Vector2f tetrominoCenter = findCenter(mTetrominos[i]->mShape);
+		sf::Vector2f offsetToCenter = centerScreen - tetrominoCenter;
+		sf::Vector2f moveToTop(offsetToCenter.x, offsetToCenter.y - 300.f);
+
+
+
+		for (std::size_t j = 0; j < mTetrominos[i]->mShape.getVertexCount(); j++) {
+			mTetrominos[i]->mShape[j].position += moveToTop;
+		}
 	}
 	//testRotation();
 
-	rotation.rotate(10.0f);
+	/*rotation.rotate(25.0f);
 
-	transform = rotation;
-
-	//mTetrominos[0]->mShape[0].position = PointA;
-	//mTetrominos[0]->mShape[1].position = PointB;
-	//mTetrominos[0]->mShape[2].position = PointC;
-
-
-	//triangle[0].position = PointA;
-	//triangle[1].position = PointB;
-	//triangle[2].position = PointC;
-
-	//triangle[0].color = sf::Color::Blue;
-	//triangle[1].color = sf::Color::Blue;
-	//triangle[2].color = sf::Color::Blue;
-
-
+	transform = rotation;*/
 }
 
 void Application::run()
@@ -170,6 +165,8 @@ void Application::processEvents()
 int i = 0;
 int rotate = 45;
 
+
+
 void Application::update(sf::Time dt)
 {
 	if (i < mTetrominos.size()) {
@@ -180,6 +177,7 @@ void Application::update(sf::Time dt)
 		sf::Transform transform = rotation;
 
 		sf::Vector2f pos = mTetrominos[i]->mShape[0].position;
+	/*	mTetrominos[i]->mShape[0].position = movement;*/
 		Tetromino* tetromino = mTetrominos[i].get();
 		const float MAX_FLOOR = 540.649f;
 
@@ -193,9 +191,14 @@ void Application::update(sf::Time dt)
 				movement.y += PlayerSpeed;
 
 			if (mIsRotating)
-				transform = rotation.rotate(0.1f);
+				tetromino->rotate(transform);
 		}
 		tetromino->setVelocity(movement);
+		tetromino->setTransform(transform);
+
+		//for (std::size_t i = 0; i < mTetrominos[i]->mShape.getVertexCount(); i++) {
+		//	mTetrominos[i]->mShape[i].position = center ;
+		//}
 
 		//sf::Vector2f Point_BP = transform.transformPoint(PointB);
 		//sf::Vector2f Point_CP = transform.transformPoint(PointC);
@@ -212,17 +215,22 @@ void Application::update(sf::Time dt)
 		sf::Vector2f PointC(20.f, 20.f);
 		sf::Vector2f*/
 
-		sf::Vector2f sum;
 
-		for (size_t index = 0; index < mTetrominos[i]->mShape.getVertexCount(); index++) {
-			float verticeX = mTetrominos[i]->mVertices[index].position.x;
-			float verticeY = mTetrominos[i]->mVertices[index].position.y;
+		//entity.move(5.f, 5.f);
+	/*	for (std::size_t i = 0; i < mTetrominos[i]->mShape.getVertexCount(); i++) {
+			movement = transform.transformPoint(sf::Vector2f(20.f, 20.f));
+			mTetrominos[i]->mShape[i].position
+		}*/
+		//float rotation = entity.getRotation();
+		//std::cout << "rotation:" << rotation << std::endl;
+		//sf::Vector2f center = findCenter(mTetrominos[0]->mShape);
+		//testRotation(mTetrominos[0]->mShape, 45.0f, center);
 
-			sf::Vector2f point = mTetrominos[i]->mShape[index].position - center;
-			//movement = transform.transformPoint(point);
-			/*transform.rotate(0.1f);
-			transform.transformPoint(point);*/
-		}
+		//transform.rotate(180.0f, movement);
+
+		/*rotation.rotate(25.0f);*/
+
+		transform = rotation;
 
 		if (pos.y >= MAX_FLOOR) {
 			mIsFloor = true;
@@ -240,6 +248,8 @@ void Application::update(sf::Time dt)
 
 }
 
+
+
 /**
 	deberia manejar el vertex array para construir los tetrominos
 	luego con un enum diferenciar el ID del tetromino en cuestion
@@ -250,12 +260,12 @@ void Application::render()
 	mWindow.clear(sf::Color(18, 33, 43)); // Color background
 
 	if (i < mTetrominos.size()) {
-		mWindow.draw(mTetrominos[i]->mShape);
+		mWindow.draw(mTetrominos[i]->mShape, transform);
 	}
 	for (int i = 0; i < mTetrominosReached.size(); i++)
 		mWindow.draw(mTetrominosReached[i]->mShape);
 
-	//mWindow.draw(triangle);
+	//mWindow.draw(entity);
 	mWindow.display();
 }
 
@@ -293,13 +303,28 @@ void Application::moveVertexArray(sf::VertexArray& vertexArray, sf::Vector2f off
 	}
 }
 
-void testRotation() {
-	rotation.rotate(10.0f);
+void Application::testRotation(sf::VertexArray& shape, float angleDegrees, const sf::Vector2f& center) {
+	float angleRad = angleDegrees * 3.14159265f / 180.0f; // convert degrees to radians
+	for (size_t index = 0; index < shape.getVertexCount(); index++) {
+		sf::Vector2f point = shape[i].position - center;
 
-	transform = rotation;
+		// apply rotation
+		float rotatedX = point.x * cos(angleRad) - point.y * sin(angleRad);
+		float rotatedY = point.y * sin(angleRad) + point.y * cos(angleRad);
 
-	//sf::Vector2f PointA(350.0f, 350.0f);
-	//sf::Vector2f PointB(250.0f, 340.0f);
-	//sf::Vector2f PointC(250.0f, 360.0f);
+		// translate back and set position
+		shape[i].position = sf::Vector2f(rotatedX + center.x, rotatedY + center.y);
+	}
+}
 
+sf::Vector2f Application::findCenter(const sf::VertexArray& vertices) {
+	sf::Vector2f sum(0.f, 0.f);
+	for (std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
+		sum += vertices[i].position;
+	}
+	if (vertices.getVertexCount() > 0) {
+		sum.x /= static_cast<float>(vertices.getVertexCount());
+		sum.y /= static_cast<float>(vertices.getVertexCount());
+	}
+	return sum;
 }

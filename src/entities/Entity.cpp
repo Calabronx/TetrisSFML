@@ -11,7 +11,17 @@ void Entity::setVelocity(float vx, float vy)
 	mVelocity.y = vy;
 }
 
+
 sf::Vector2f Entity::getVelocity() const
 {
 	return mVelocity;
+}
+
+void Entity::setTransform(sf::Transform transform)
+{
+	mTransform = transform;
+}
+sf::Transform Entity::getTransform() const
+{
+	return mTransform;
 }

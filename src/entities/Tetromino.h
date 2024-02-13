@@ -28,7 +28,7 @@ public:
 	sf::Vector2f					mPosition;
 	std::array<sf::Vertex, 8>		mVertices;
 
-	void					rotate();
+	void					rotate(sf::Transform& transform);
 	void					destroy();
 private:
 

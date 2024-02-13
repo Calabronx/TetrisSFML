@@ -7,13 +7,17 @@
 class Entity
 {
 public:
-	void				setVelocity(sf::Vector2f velocity);
-	void				setVelocity(float vx, float vy);
-	sf::Vector2f		getVelocity() const;
+	void							setVelocity(sf::Vector2f velocity);
+	void							setVelocity(float vx, float vy);
+	void							setTransform(sf::Transform transform);
+	sf::Vector2f				getVelocity() const;
+	sf::Transform				getTransform() const;
+
+public:
+	sf::Transform		mTransform;
 
 private:
 	sf::Vector2f		mVelocity;
-	sf::Transform		mTransform;
 };
 #endif // !ENTITY_H
 
