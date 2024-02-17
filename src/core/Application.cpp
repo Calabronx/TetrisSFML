@@ -9,6 +9,9 @@ const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 sf::Transform rotation;
 sf::Transform transform = rotation;
 sf::RectangleShape entity;
+sf::Vector2f movementTest;
+
+float angleGlobal = 0.f;
 
 Application::Application()
 	:mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
@@ -45,7 +48,7 @@ Application::Application()
 		else if (randomId == Tetromino::T) {
 			std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
 			mTetrominos.push_back(std::move(tShape));
-		
+
 		}
 		else if (randomId == Tetromino::O) {
 			std::unique_ptr<Tetromino>oShape(new Tetromino(Tetromino::O));
@@ -65,7 +68,7 @@ Application::Application()
 			mTetrominos.push_back(std::move(lShape));
 		}
 
-		sf::Vector2f windowSize(600.f,600.f);
+		sf::Vector2f windowSize(600.f, 600.f);
 		sf::Vector2f centerScreen = windowSize / 2.0f;
 
 		sf::Vector2f tetrominoCenter = findCenter(mTetrominos[i]->mShape);
@@ -80,9 +83,13 @@ Application::Application()
 	}
 	//testRotation();
 
-	/*rotation.rotate(25.0f);
+	/*rotation.rotate(90.0f);
 
 	transform = rotation;*/
+
+	//sf::Vector2f centerTetromino = findCenter(mTetrominos[0]->mShape);
+	//applyCenterRotation(90.0f, centerTetromino, transform, rotation);
+	//transform = rotation;
 }
 
 void Application::run()
@@ -165,70 +172,40 @@ void Application::processEvents()
 int i = 0;
 int rotate = 45;
 
-
-
 void Application::update(sf::Time dt)
 {
 	if (i < mTetrominos.size()) {
 		sf::Vector2f movement(0.f, 0.f);
-		sf::Transform rotation;
-		//rotation.rotate(rotate);
-		//rotate++;
-		sf::Transform transform = rotation;
-
 		sf::Vector2f pos = mTetrominos[i]->mShape[0].position;
-	/*	mTetrominos[i]->mShape[0].position = movement;*/
+		/*	mTetrominos[i]->mShape[0].position = movement;*/
 		Tetromino* tetromino = mTetrominos[i].get();
 		const float MAX_FLOOR = 540.649f;
+		sf::Vector2f centerTetromino = findCenter(mTetrominos[0]->mShape);
 
-		if (pos.y < MAX_FLOOR) {
-			movement.y += PlayerSpeed;
-			if (mIsMovingRight)
-				movement.x += PlayerSpeed;
-			if (mIsMovingLeft)
-				movement.x -= PlayerSpeed;
-			if (mIsMovingDown)
+		/*movement = applyCenterRotation(90.0f, centerTetromino, transform, rotation);*/
+
+		if (pos.y < MAX_FLOOR) { // esta validacion no es manejable para todos los angulos
+			if (!mIsRotating)
 				movement.y += PlayerSpeed;
+			//std::cout << "+Y"<< std::endl;
+			if (mIsRotating) {
+				movement.x += PlayerSpeed;
+				sf::Vector2f centerTetromino = findCenter(mTetrominos[0]->mShape);
+				applyCenterRotation(90.0f, centerTetromino, transform, rotation);
+				transform = rotation;
+				mIsRotating = false;
+			}
+			movement = obtainDirection(angleGlobal);
 
-			if (mIsRotating)
-				tetromino->rotate(transform);
+			//std::cout << "X: " << movement.x << " Y: " << movement.y << std::endl;
+
+			if (mIsRotating) {
+				//float angle = rotation
+				//std::cout << transform. << std::endl;
+			}
 		}
 		tetromino->setVelocity(movement);
 		tetromino->setTransform(transform);
-
-		//for (std::size_t i = 0; i < mTetrominos[i]->mShape.getVertexCount(); i++) {
-		//	mTetrominos[i]->mShape[i].position = center ;
-		//}
-
-		//sf::Vector2f Point_BP = transform.transformPoint(PointB);
-		//sf::Vector2f Point_CP = transform.transformPoint(PointC);
-
-		//triangle[1].position = Point_BP;
-		//triangle[2].position = Point_CP;
-
-		//triangle[0].color = sf::Color(0, 0, 255, 20);
-		//triangle[1].color = sf::Color::Blue;
-		//triangle[0].color = sf::Color::Blue;
-
-	/*	sf::Vector2f PointA(20.f, 20.f);
-		sf::Vector2f PointB(20.f, 20.f);
-		sf::Vector2f PointC(20.f, 20.f);
-		sf::Vector2f*/
-
-
-		//entity.move(5.f, 5.f);
-	/*	for (std::size_t i = 0; i < mTetrominos[i]->mShape.getVertexCount(); i++) {
-			movement = transform.transformPoint(sf::Vector2f(20.f, 20.f));
-			mTetrominos[i]->mShape[i].position
-		}*/
-		//float rotation = entity.getRotation();
-		//std::cout << "rotation:" << rotation << std::endl;
-		//sf::Vector2f center = findCenter(mTetrominos[0]->mShape);
-		//testRotation(mTetrominos[0]->mShape, 45.0f, center);
-
-		//transform.rotate(180.0f, movement);
-
-		/*rotation.rotate(25.0f);*/
 
 		transform = rotation;
 
@@ -237,18 +214,17 @@ void Application::update(sf::Time dt)
 			movement.x = 0;
 			movement.y = 0;
 			mTetrominosReached.push_back(std::move(mTetrominos[i]));
-			std::cout << "size: " << mTetrominosReached.size() << std::endl;
+			//std::cout << "size: " << mTetrominosReached.size() << std::endl;
 			i++;
 		}
 
 		/*std::cout << mTetrominos.size() << std::endl;*/
+
 		if (i < mTetrominos.size())
 			moveVertexArray(mTetrominos[i]->mShape, tetromino->getVelocity(), dt);
 	}
 
 }
-
-
 
 /**
 	deberia manejar el vertex array para construir los tetrominos
@@ -287,12 +263,10 @@ void Application::handlePlayerInput(sf::Keyboard::Key key, bool isPressed)
 		mIsMovingLeft = isPressed;
 	else if (key == sf::Keyboard::D)
 		mIsMovingRight = isPressed;
-
-	else if (key == sf::Keyboard::Z)
+	else if (key == sf::Keyboard::R)
 		mIsRotating = isPressed;
 
 	/*else if (key == sf::Keyboard::Escape)
-		std::cout << "QUITTING GAME..." << std::endl;
 		exit(0);*/
 }
 
@@ -315,6 +289,87 @@ void Application::testRotation(sf::VertexArray& shape, float angleDegrees, const
 		// translate back and set position
 		shape[i].position = sf::Vector2f(rotatedX + center.x, rotatedY + center.y);
 	}
+}
+
+/**
+	deberia manejar enums para los angulos, nunca deben cambiarse
+**/
+
+void Application::handleMovement(sf::Vector2f& direction, float angle)
+{
+	
+	if (angle == 0.0f) {
+		if (mIsMovingRight)
+			direction.x += PlayerSpeed;
+		if (mIsMovingLeft)
+			direction.x -= PlayerSpeed;
+		if (mIsMovingDown)
+			direction.y += PlayerSpeed;
+	}
+	else if (angle == 90.0f) {
+		if (mIsMovingRight)
+			direction.y -= PlayerSpeed;
+		if (mIsMovingLeft)
+			direction.y += PlayerSpeed;
+		if (mIsMovingDown)
+			direction.x += PlayerSpeed;
+	}
+	else if (angle == 180.0f) {
+		if (mIsMovingRight)
+			direction.x -= PlayerSpeed;
+		if (mIsMovingLeft)
+			direction.x += PlayerSpeed;
+		if (mIsMovingDown)
+			direction.y -= PlayerSpeed;
+	}
+	else if (angle == 270.0f) {
+		if (mIsMovingRight)
+			direction.y += PlayerSpeed;
+		if (mIsMovingLeft)
+			direction.y -= PlayerSpeed;
+		if (mIsMovingDown)
+			direction.x -= PlayerSpeed;
+	}
+}
+
+sf::Vector2f Application::obtainDirection(float angle)
+{
+	sf::Vector2f direction(0.0f, 0.f);
+	if (angle == 0.0f) {
+		handleMovement(direction,angle);
+		direction.y += PlayerSpeed;
+	}
+	else if (angle == 90.0f) {
+		handleMovement(direction, angle);
+		direction.x += PlayerSpeed;
+	}
+	else if (angle == 180.0f) {
+		handleMovement(direction, angle);
+		direction.y -= PlayerSpeed;
+	}
+	else if (angle == 270.0f) {
+		handleMovement(direction, angle);
+		direction.x -= PlayerSpeed;
+	}
+
+	return direction;
+}
+
+sf::Vector2f Application::applyCenterRotation(float angle, sf::Vector2f& center, sf::Transform& transform, sf::Transform& rotation)
+{
+	sf::Vector2f direction(0.0f, 0.0f);
+	rotation.rotate(angle, center.x, center.y);
+	transform = rotation;
+	if (angleGlobal >= 270.0f) {
+		angleGlobal = 0.0f;
+	}
+	else {
+		angleGlobal += angle;
+	}
+	//std::cout << " angle: " << angleGlobal << std::endl;
+
+	return direction;
+
 }
 
 sf::Vector2f Application::findCenter(const sf::VertexArray& vertices) {
