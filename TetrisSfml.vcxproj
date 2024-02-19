@@ -142,14 +142,20 @@
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\entities\Entity.cpp" />
     <ClCompile Include="src\entities\Tetromino.cpp" />
+    <ClCompile Include="src\nodes\SceneNode.cpp" />
+    <ClCompile Include="src\nodes\SpriteNode.cpp" />
     <ClCompile Include="src\util\DataTables.cpp" />
+    <ClCompile Include="src\util\GameScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\entities\Entity.h" />
     <ClInclude Include="src\entities\Tetromino.h" />
+    <ClInclude Include="src\nodes\SceneNode.h" />
+    <ClInclude Include="src\nodes\SpriteNode.h" />
     <ClInclude Include="src\util\DataTables.h" />
+    <ClInclude Include="src\util\GameScreen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

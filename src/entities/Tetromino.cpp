@@ -6,10 +6,6 @@ namespace {
 	const std::vector<TetrominoData> TetrominoTable = initializeTetrominoData();
 }
 
-Tetromino::Tetromino()
-{
-}
-
 Tetromino::Tetromino(Type type)
 	: mShape(sf::TriangleFan)
 	, mType(type)
@@ -17,20 +13,10 @@ Tetromino::Tetromino(Type type)
 	, mVertices(TetrominoTable[type].vertices)
 {
 	for (auto i = 0; i < mVertices.size(); i++) {
-	/*	sf::Vector2f sum(0.f, 0.f);
-		sum += mVertices[i].position;
-		mPosition = sum;*/
 		mShape.append(mVertices[i]);
+		mCenter = findCenter(mShape);
 	}
 }
-
-/**
-	begin
-		obtener la actual posicion del tetromino
-		mover en el eje x 180 grados
-		setear la nueva posicion
-	end
-**/
 
 void Tetromino::rotate(sf::Transform& transform)
 {
@@ -45,4 +31,26 @@ void Tetromino::rotate(sf::Transform& transform)
 
 void Tetromino::destroy()
 {
+}
+
+sf::Vector2f Tetromino::findCenter(const sf::VertexArray& vertices) {
+	sf::Vector2f sum(0.f, 0.f);
+	for (std::size_t i = 0; i < vertices.getVertexCount(); ++i) {
+		sum += vertices[i].position;
+	}
+	if (vertices.getVertexCount() > 0) {
+		sum.x /= static_cast<float>(vertices.getVertexCount());
+		sum.y /= static_cast<float>(vertices.getVertexCount());
+	}
+	return sum;
+}
+
+sf::Vector2f Tetromino::getCenter() const
+{
+	return mCenter;
+}
+
+void Tetromino::setCenter(sf::Vector2f& center)
+{
+	mCenter = center;
 }

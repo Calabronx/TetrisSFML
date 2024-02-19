@@ -28,6 +28,9 @@
     <Filter Include="Source Files\src\util">
       <UniqueIdentifier>{2ba35a22-ceb7-4ed9-bde3-542ab7db2c03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\nodes">
+      <UniqueIdentifier>{e0e1daac-b991-4716-9578-6e8154bb153e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -48,6 +51,15 @@
     <ClCompile Include="src\util\DataTables.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\nodes\SceneNode.cpp">
+      <Filter>Source Files\src\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\nodes\SpriteNode.cpp">
+      <Filter>Source Files\src\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\GameScreen.cpp">
+      <Filter>Source Files\src\util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -63,6 +75,15 @@
       <Filter>Source Files\src\entities</Filter>
     </ClInclude>
     <ClInclude Include="src\util\DataTables.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nodes\SceneNode.h">
+      <Filter>Source Files\src\nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nodes\SpriteNode.h">
+      <Filter>Source Files\src\nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\GameScreen.h">
       <Filter>Source Files\src\util</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,35 +8,39 @@
 class Tetromino : public Entity
 {
 
-public:
+		public:
 
-	enum Type
-	{
-			L,
-			T,
-			J,
-			O,
-			S,
-			Z
-	};
+			enum Type
+			{
+					L,
+					T,
+					J,
+					O,
+					S,
+					Z
+			};
 
-public:
-	explicit								Tetromino();
-										Tetromino(Type type);
-	sf::Transform					mRotation;
-	sf::VertexArray					mShape;
-	sf::Vector2f					mPosition;
-	std::array<sf::Vertex, 8>		mVertices;
+		public:
+			explicit									Tetromino(Type type);
+			sf::Transform					mRotation;
+			sf::VertexArray					mShape;
+			sf::Vector2f					mPosition;
+			std::array<sf::Vertex, 8>		mVertices;
 
-	void					rotate(sf::Transform& transform);
-	void					destroy();
-private:
+			void						rotate(sf::Transform& transform);
+			void						destroy();
+			sf::Vector2f			findCenter(const sf::VertexArray& shape);
+
+			sf::Vector2f		getCenter() const;
+			void				setCenter(sf::Vector2f& center);
+		private:
 
 
-private:
-	sf::Vector2f		mSize;
-	sf::Color			mColor;
-	Type				mType;
+		private:
+			sf::Vector2f					mSize;
+			sf::Vector2f					mCenter;
+			sf::Color						mColor;
+			Type							mType;
 
 };
 

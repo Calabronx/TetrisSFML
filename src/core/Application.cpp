@@ -12,7 +12,10 @@ sf::RectangleShape entity;
 sf::Vector2f movementTest;
 
 float angleGlobal = 0.f;
-
+const float MAX_Y = 540.649f;
+const float MAX_X = 850.000f;
+sf::Vector2f floorLimit(MAX_X, MAX_Y);
+sf::Vector2f result;
 Application::Application()
 	:mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
 	, mPlayer()
@@ -23,17 +26,6 @@ Application::Application()
 	, mIsFloor(false)
 {
 	int centerScreen = mWindow.getSize().x / 2;
-	/*entity.setPosition(centerScreen, 50.0f);
-	entity.setFillColor(sf::Color::Yellow);
-	entity.setSize(sf::Vector2f(120, 120));*/
-	//mPlayer.setRadius(40.f);
-	//mPlayer.setSize(sf::Vector2f(100, 50));
-	//mPlayer.setOutlineColor(sf::Color::Black);
-	//mPlayer.setFillColor(sf::Color::Yellow);
-
-	//mPlayer.setOutlineThickness(5);
-	//mPlayer.setPosition(300.f, 100.f);
-	//mPlayer.setFillColor(sf::Color::Cyan);
 
 	const int tetrominosCounter = 30;
 	sf::Vector2f centerShape(0.0f, 0.0f);
@@ -75,12 +67,18 @@ Application::Application()
 		sf::Vector2f offsetToCenter = centerScreen - tetrominoCenter;
 		sf::Vector2f moveToTop(offsetToCenter.x, offsetToCenter.y - 300.f);
 
-
-
 		for (std::size_t j = 0; j < mTetrominos[i]->mShape.getVertexCount(); j++) {
 			mTetrominos[i]->mShape[j].position += moveToTop;
 		}
 	}
+	/*const float MAX_Y = 540.649f;
+	const float MAX_X = 850.000f;
+	sf::Vector2f floorLimit(MAX_X, MAX_Y);*/
+	sf::Vector2f initialPosition = mTetrominos[0]->mShape[0].position;
+
+
+	result = floorLimit - initialPosition;
+	std::cout << "X: " << result.x << " Y: " << result.y << std::endl;
 	//testRotation();
 
 	/*rotation.rotate(90.0f);
@@ -182,6 +180,12 @@ void Application::update(sf::Time dt)
 		const float MAX_FLOOR = 540.649f;
 		sf::Vector2f centerTetromino = findCenter(mTetrominos[0]->mShape);
 
+		//sf::Vector2f floorLimit(MAX_FLOOR, MAX_FLOOR);
+
+		//sf::Vector2f result = floorLimit - pos;
+
+		//std::cout << "X: " << result.x << " Y: " << result.y << std::endl;
+
 		/*movement = applyCenterRotation(90.0f, centerTetromino, transform, rotation);*/
 
 		if (pos.y < MAX_FLOOR) { // esta validacion no es manejable para todos los angulos
@@ -209,7 +213,9 @@ void Application::update(sf::Time dt)
 
 		transform = rotation;
 
-		if (pos.y >= MAX_FLOOR) {
+		std::cout << "X: " << pos.x << " Y: " << pos.y << std::endl;
+
+		if (pos.y >= result.y) {
 			mIsFloor = true;
 			movement.x = 0;
 			movement.y = 0;
@@ -297,7 +303,7 @@ void Application::testRotation(sf::VertexArray& shape, float angleDegrees, const
 
 void Application::handleMovement(sf::Vector2f& direction, float angle)
 {
-	
+
 	if (angle == 0.0f) {
 		if (mIsMovingRight)
 			direction.x += PlayerSpeed;
@@ -336,7 +342,7 @@ sf::Vector2f Application::obtainDirection(float angle)
 {
 	sf::Vector2f direction(0.0f, 0.f);
 	if (angle == 0.0f) {
-		handleMovement(direction,angle);
+		handleMovement(direction, angle);
 		direction.y += PlayerSpeed;
 	}
 	else if (angle == 90.0f) {
