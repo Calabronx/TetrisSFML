@@ -14,16 +14,33 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 	loadResources();
 	buildScene();
 
-	//
+	// prepare the view
 	mWorldView.setCenter(mSpawnPosition);
 }
 
 void GameScreen::update(sf::Time dt)
 {
+	// scroll the world
+	mWorldView.move(0.f, mScrollSpeed * dt.asSeconds());
+
+	// move player sidewards 
+	sf::Vector2f position = mPlayerTetromino->getPosition();
+	sf::Vector2f velocity = mPlayerTetromino->getVelocity();
+
+	// if player touches borders, flip its x velocity
+	if (position.x <= mWorldBounds.left + 150.0f || position.x >= mWorldBounds.left + mWorldBounds.width - 150.f)
+	{
+		velocity.x = -velocity.x;
+		mPlayerTetromino->setVelocity(velocity);
+	}
+
+	mSceneGraph.update(dt);
 }
 
 void GameScreen::draw()
 {
+	mWindow.setView(mWorldView);
+	mWindow.draw(mSceneGraph);
 }
 
 void GameScreen::loadResources()
@@ -40,7 +57,9 @@ void GameScreen::buildScene()
 
 		if (randomId == Tetromino::L) {
 			std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::T));
-			mTetrominos.push_back(std::move(lShape));
+			//mTetrominos.push_back(std::move(lShape));
+			//mSceneLayers[Plataform]->attachChild(std::move(lShape));
+
 		}
 		else if (randomId == Tetromino::T) {
 			std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
@@ -68,7 +87,7 @@ void GameScreen::buildScene()
 		sf::Vector2f windowSize(600.f, 600.f);
 		sf::Vector2f centerScreen = windowSize / 2.0f;
 
-		sf::Vector2f tetrominoCenter = mTetrominos[i]->mCenter;
+		sf::Vector2f tetrominoCenter = mTetrominos[i]->getCenter();
 		sf::Vector2f offsetToCenter = centerScreen - tetrominoCenter;
 		sf::Vector2f moveToTop(offsetToCenter.x, offsetToCenter.y - 300.f);
 

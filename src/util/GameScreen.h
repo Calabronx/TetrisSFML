@@ -44,6 +44,7 @@ class GameScreen : private sf::NonCopyable
 			std::vector<std::unique_ptr<Tetromino>> mTetrominos;
 			std::vector<std::unique_ptr<Tetromino>> mTetrominosReached;
 			//Player manejar el input con esta clase
+			Tetromino*								mPlayerTetromino;
 
 };
 #endif // !GAMESCREEN_H
