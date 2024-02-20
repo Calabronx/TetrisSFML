@@ -22,6 +22,7 @@ class Tetromino : public Entity
 
 		public:
 			explicit									Tetromino(Type type);
+			virtual void								drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 			sf::Transform					mRotation;
 			sf::VertexArray					mShape;
 			sf::Vector2f					mPosition;

@@ -18,6 +18,11 @@ Tetromino::Tetromino(Type type)
 	}
 }
 
+void Tetromino::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	target.draw(mShape, states);
+}
+
 void Tetromino::rotate(sf::Transform& transform)
 {
 	mTransform = transform;
