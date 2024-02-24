@@ -4,6 +4,7 @@
 
 #include<SFML/Graphics.hpp>
 #include "../entities/Tetromino.h"
+#include "../util/GameScreen.h"
 
 class Application
 {
@@ -45,14 +46,15 @@ private:
 	std::vector<std::unique_ptr<Tetromino>> mTetrominosReached;
 
 
-	sf::RectangleShape		mPlayer;
-	sf::RenderWindow		mWindow;
-	bool					mIsMovingUp;
-	bool					mIsMovingDown;
-	bool					mIsMovingRight;
-	bool					mIsMovingLeft;
-	bool					mIsFloor;
-	bool					mIsRotating;
+	sf::RectangleShape			mPlayer;
+	sf::RenderWindow			mWindow;
+	GameScreen							mGameScreen;
+	bool									mIsMovingUp;
+	bool									mIsMovingDown;
+	bool									mIsMovingRight;
+	bool									mIsMovingLeft;
+	bool									mIsFloor;
+	bool									mIsRotating;
 
 };
 #endif // !APPLICATION_H

@@ -16,8 +16,10 @@ const float MAX_Y = 540.649f;
 const float MAX_X = 850.000f;
 sf::Vector2f floorLimit(MAX_X, MAX_Y);
 sf::Vector2f result;
+
 Application::Application()
 	:mWindow(sf::VideoMode(600, 600), "Window Title", sf::Style::Close)
+	, mGameScreen(mWindow)
 	, mPlayer()
 	, mIsMovingUp(false)
 	, mIsMovingDown(false)
@@ -30,7 +32,7 @@ Application::Application()
 	const int tetrominosCounter = 30;
 	sf::Vector2f centerShape(0.0f, 0.0f);
 
-	for (auto i = 0; i < tetrominosCounter; i++) {
+	/*for (auto i = 0; i < tetrominosCounter; i++) {
 		int randomId = rand() % 5 + 1;
 
 		if (randomId == Tetromino::L) {
@@ -70,15 +72,15 @@ Application::Application()
 		for (std::size_t j = 0; j < mTetrominos[i]->mShape.getVertexCount(); j++) {
 			mTetrominos[i]->mShape[j].position += moveToTop;
 		}
-	}
+	}*/
 	/*const float MAX_Y = 540.649f;
 	const float MAX_X = 850.000f;
 	sf::Vector2f floorLimit(MAX_X, MAX_Y);*/
-	sf::Vector2f initialPosition = mTetrominos[0]->mShape[0].position;
+	//sf::Vector2f initialPosition = mTetrominos[0]->mShape[0].position;
 
 
-	result = floorLimit - initialPosition;
-	std::cout << "X: " << result.x << " Y: " << result.y << std::endl;
+	//result = floorLimit - initialPosition;
+	//std::cout << "X: " << result.x << " Y: " << result.y << std::endl;
 	//testRotation();
 
 	/*rotation.rotate(90.0f);
@@ -172,63 +174,64 @@ int rotate = 45;
 
 void Application::update(sf::Time dt)
 {
-	if (i < mTetrominos.size()) {
-		sf::Vector2f movement(0.f, 0.f);
-		sf::Vector2f pos = mTetrominos[i]->mShape[0].position;
-		/*	mTetrominos[i]->mShape[0].position = movement;*/
-		Tetromino* tetromino = mTetrominos[i].get();
-		const float MAX_FLOOR = 540.649f;
-		sf::Vector2f centerTetromino = findCenter(mTetrominos[0]->mShape);
+	//if (i < mTetrominos.size()) {
+	//	sf::Vector2f movement(0.f, 0.f);
+	//	sf::Vector2f pos = mTetrominos[i]->mShape[0].position;
+	//	/*	mTetrominos[i]->mShape[0].position = movement;*/
+	//	Tetromino* tetromino = mTetrominos[i].get();
+	//	const float MAX_FLOOR = 540.649f;
+	//	sf::Vector2f centerTetromino = findCenter(mTetrominos[0]->mShape);
 
-		//sf::Vector2f floorLimit(MAX_FLOOR, MAX_FLOOR);
+	//	//sf::Vector2f floorLimit(MAX_FLOOR, MAX_FLOOR);
 
-		//sf::Vector2f result = floorLimit - pos;
+	//	//sf::Vector2f result = floorLimit - pos;
 
-		//std::cout << "X: " << result.x << " Y: " << result.y << std::endl;
+	//	//std::cout << "X: " << result.x << " Y: " << result.y << std::endl;
 
-		/*movement = applyCenterRotation(90.0f, centerTetromino, transform, rotation);*/
+	//	/*movement = applyCenterRotation(90.0f, centerTetromino, transform, rotation);*/
 
-		if (pos.y < MAX_FLOOR) { // esta validacion no es manejable para todos los angulos
-			if (!mIsRotating)
-				movement.y += PlayerSpeed;
-			//std::cout << "+Y"<< std::endl;
-			if (mIsRotating) {
-				movement.x += PlayerSpeed;
-				sf::Vector2f centerTetromino = findCenter(mTetrominos[0]->mShape);
-				applyCenterRotation(90.0f, centerTetromino, transform, rotation);
-				transform = rotation;
-				mIsRotating = false;
-			}
-			movement = obtainDirection(angleGlobal);
+	//	if (pos.y < MAX_FLOOR) { // esta validacion no es manejable para todos los angulos
+	//		if (!mIsRotating)
+	//			movement.y += PlayerSpeed;
+	//		//std::cout << "+Y"<< std::endl;
+	//		if (mIsRotating) {
+	//			movement.x += PlayerSpeed;
+	//			sf::Vector2f centerTetromino = findCenter(mTetrominos[0]->mShape);
+	//			applyCenterRotation(90.0f, centerTetromino, transform, rotation);
+	//			transform = rotation;
+	//			mIsRotating = false;
+	//		}
+	//		movement = obtainDirection(angleGlobal);
 
-			//std::cout << "X: " << movement.x << " Y: " << movement.y << std::endl;
+	//		//std::cout << "X: " << movement.x << " Y: " << movement.y << std::endl;
 
-			if (mIsRotating) {
-				//float angle = rotation
-				//std::cout << transform. << std::endl;
-			}
-		}
-		tetromino->setVelocity(movement);
-		tetromino->setTransform(transform);
+	//		if (mIsRotating) {
+	//			//float angle = rotation
+	//			//std::cout << transform. << std::endl;
+	//		}
+	//	}
+	//	tetromino->setVelocity(movement);
+	//	tetromino->setTransform(transform);
 
-		transform = rotation;
+	//	transform = rotation;
 
-		std::cout << "X: " << pos.x << " Y: " << pos.y << std::endl;
+	//	std::cout << "X: " << pos.x << " Y: " << pos.y << std::endl;
 
-		if (pos.y >= result.y) {
-			mIsFloor = true;
-			movement.x = 0;
-			movement.y = 0;
-			mTetrominosReached.push_back(std::move(mTetrominos[i]));
-			//std::cout << "size: " << mTetrominosReached.size() << std::endl;
-			i++;
-		}
+	//	if (pos.y >= result.y) {
+	//		mIsFloor = true;
+	//		movement.x = 0;
+	//		movement.y = 0;
+	//		mTetrominosReached.push_back(std::move(mTetrominos[i]));
+	//		//std::cout << "size: " << mTetrominosReached.size() << std::endl;
+	//		i++;
+	//	}
 
-		/*std::cout << mTetrominos.size() << std::endl;*/
+	//	/*std::cout << mTetrominos.size() << std::endl;*/
 
-		if (i < mTetrominos.size())
-			moveVertexArray(mTetrominos[i]->mShape, tetromino->getVelocity(), dt);
-	}
+	//	if (i < mTetrominos.size())
+	//		moveVertexArray(mTetrominos[i]->mShape, tetromino->getVelocity(), dt);
+	//}
+	mGameScreen.update(dt);
 
 }
 
@@ -241,11 +244,13 @@ void Application::render()
 {
 	mWindow.clear(sf::Color(18, 33, 43)); // Color background
 
-	if (i < mTetrominos.size()) {
+	/*if (i < mTetrominos.size()) {
 		mWindow.draw(mTetrominos[i]->mShape, transform);
 	}
 	for (int i = 0; i < mTetrominosReached.size(); i++)
-		mWindow.draw(mTetrominosReached[i]->mShape);
+		mWindow.draw(mTetrominosReached[i]->mShape);*/
+
+	mGameScreen.draw();
 
 	//mWindow.draw(entity);
 	mWindow.display();
