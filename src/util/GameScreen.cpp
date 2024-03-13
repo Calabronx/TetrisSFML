@@ -8,9 +8,10 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 	, mSceneGraph()
 	, mSceneLayers()
 	, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, 2000.f)
-	, mSpawnPosition(0.0f, 500.0f)
+	, mSpawnPosition(0.0f, 700.0f)
 	, mTetrominosSpawnPoints()
 	, mScrollSpeed(-50.f)
+	, mPlayerTetromino(nullptr)
 {
 	loadResources();
 	buildScene();
@@ -24,16 +25,22 @@ void GameScreen::update(sf::Time dt)
 	// scroll the world
 	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds());
 
-	// move player sidewards 
+	 //move player sidewards 
 	sf::Vector2f position = mPlayerTetromino->getPosition();
 	sf::Vector2f velocity = mPlayerTetromino->getVelocity();
 
+	// Forward commands to the scene graph
+	while (!mCommandQueue.isEmpty())
+		mSceneGraph.onCommand(mCommandQueue.pop(), dt);
+	
+
 	// if player touches borders, flip its x velocity
-	if (position.x <= mWorldBounds.left + 150.0f || position.x >= mWorldBounds.left + mWorldBounds.width - 150.f)
-	{
-		velocity.x = -velocity.x;
-		mPlayerTetromino->setVelocity(velocity);
-	}
+	// // actualmente se rompe al setear la velocidad o posicion del jugador
+	//if (position.x <= mWorldBounds.left + 150.0f || position.x >= mWorldBounds.left + mWorldBounds.width - 150.f)
+	//{
+	//	velocity.x = -velocity.x;
+	//	//mPlayerTetromino->setVelocity(velocity);
+	//}
 
 	spawnTetrominos();
 
@@ -45,6 +52,11 @@ void GameScreen::draw()
 
 	mWindow.setView(mWorldView);
 	mWindow.draw(mSceneGraph);
+}
+
+CommandQueue& GameScreen::getCommandQueue()
+{
+	return mCommandQueue;
 }
 
 void GameScreen::loadResources()
@@ -87,8 +99,9 @@ void GameScreen::spawnTetrominos()
 		SpawnPoint spawn = mTetrominosSpawnPoints.back();
 
 		std::unique_ptr<Tetromino> tetromino(new Tetromino(spawn.type));
+
 		tetromino->setPosition(spawn.x, spawn.y);
-		tetromino->setRotation(90.f);
+		tetromino->applyCenterRotation(270.0f); // test initial rotation
 
 		mSceneLayers[Plataform]->attachChild(std::move(tetromino));
 
@@ -102,67 +115,70 @@ void GameScreen::destroyEntitiesOfView()
 
 void GameScreen::addTetrominos()
 {
-	const int tetrominosCounter = 30;
+	const int tetrominosCounter = 1;
 	sf::Vector2f centerShape(0.0f, 0.0f);
 
 	sf::Vector2f windowSize(600.f, 600.f);
 	sf::Vector2f centerScreen = windowSize / 2.0f;
 
+	std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
+	//mTetrominos.push_back(std::move(lShape));
+	//lShape->setPosition(mSpawnPosition);
+	//lShape->setPosition(0.f, 900.0f);
+	mPlayerTetromino = lShape.get();
+	//mPlayerTetromino->setPosition(0.0f, 100.0f);
+	//mSceneLayers[Plataform]->attachChild(std::move(lShape));
+
+	addTetromino(mPlayerTetromino->L);
 	// add random tetrominos
-	for (auto i = 0; i < tetrominosCounter; i++) {
-		int randomId = rand() % 5 + 1;
+	//for (auto i = 0; i < tetrominosCounter; i++) {
+	//	int randomId = rand() % 5 + 1;
 
-		std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-		//mTetrominos.push_back(std::move(lShape));
-		//lShape->setPosition(mSpawnPosition);
-		mPlayerTetromino = lShape.get();
-		//mSceneLayers[Plataform]->attachChild(std::move(lShape));
+	//	//if (randomId == Tetromino::L) {
+	//	//	//std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::T));
+	//	//	////mTetrominos.push_back(std::move(lShape));
+	//	//	//sf::Vector2f tetrominoCenter = lShape->findCenter(lShape->mShape);
+	//	//	//sf::Vector2f offsetToCenter = centerScreen - tetrominoCenter;
+	//	//	//sf::Vector2f moveToTop(offsetToCenter.x, offsetToCenter.y - 300.f);
+	//	//	////mSpawnPosition = moveToTop;
+	//	//	//lShape->setPosition(mSpawnPosition);
 
-		if (randomId == Tetromino::L) {
-			//std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::T));
-			////mTetrominos.push_back(std::move(lShape));
-			//sf::Vector2f tetrominoCenter = lShape->findCenter(lShape->mShape);
-			//sf::Vector2f offsetToCenter = centerScreen - tetrominoCenter;
-			//sf::Vector2f moveToTop(offsetToCenter.x, offsetToCenter.y - 300.f);
-			////mSpawnPosition = moveToTop;
-			//lShape->setPosition(mSpawnPosition);
+	//	//	//mSceneLayers[Plataform]->attachChild(std::move(lShape));
+	//	//	addTetromino(Tetromino::L);
 
-			//mSceneLayers[Plataform]->attachChild(std::move(lShape));
-			addTetromino(Tetromino::L);
+	//	//}
+	//	//else if (randomId == Tetromino::T) {
+	//	//	//std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
+	//	//	//mTetrominos.push_back(std::move(tShape));
+	//	//	addTetromino(Tetromino::T);
 
-		}
-		else if (randomId == Tetromino::T) {
-			//std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
-			//mTetrominos.push_back(std::move(tShape));
-			addTetromino(Tetromino::T);
-
-		}
-		else if (randomId == Tetromino::O) {
-			addTetromino(Tetromino::O);
-		}
-		else if (randomId == Tetromino::S) {
-			//std::unique_ptr<Tetromino>sShape(new Tetromino(Tetromino::S));
-			////mTetrominos.push_back(std::move(sShape));
-			//sShape->setPosition(mSpawnPosition);
-			//mSceneLayers[Plataform]->attachChild(std::move(sShape));
-			addTetromino(Tetromino::S);
-		}
-		else if (randomId == Tetromino::Z) {
-			//std::unique_ptr<Tetromino>zShape(new Tetromino(Tetromino::Z));
-			////mTetrominos.push_back(std::move(zShape));
-			//zShape->setPosition(mSpawnPosition);
-			//mSceneLayers[Plataform]->attachChild(std::move(zShape));
-			addTetromino(Tetromino::Z);
-		}
-		else {
-			//std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-			////mTetrominos.push_back(std::move(lShape));
-			////lShape->setPosition(mSpawnPosition);
-			//mPlayerTetromino = lShape.get();
-			//mSceneLayers[Plataform]->attachChild(std::move(lShape));
-			addTetromino(Tetromino::L);
-		}
-	}
+	//	//}
+	//	//else if (randomId == Tetromino::O) {
+	//	//	addTetromino(Tetromino::O);
+	//	//}
+	//	//else if (randomId == Tetromino::S) {
+	//	//	//std::unique_ptr<Tetromino>sShape(new Tetromino(Tetromino::S));
+	//	//	////mTetrominos.push_back(std::move(sShape));
+	//	//	//sShape->setPosition(mSpawnPosition);
+	//	//	//mSceneLayers[Plataform]->attachChild(std::move(sShape));
+	//	//	addTetromino(Tetromino::S);
+	//	//}
+	//	//else if (randomId == Tetromino::Z) {
+	//	//	//std::unique_ptr<Tetromino>zShape(new Tetromino(Tetromino::Z));
+	//	//	////mTetrominos.push_back(std::move(zShape));
+	//	//	//zShape->setPosition(mSpawnPosition);
+	//	//	//mSceneLayers[Plataform]->attachChild(std::move(zShape));
+	//	//	addTetromino(Tetromino::Z);
+	//	//}
+	//	//else {
+	//	//	//std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
+	//	//	////mTetrominos.push_back(std::move(lShape));
+	//	//	////lShape->setPosition(mSpawnPosition);
+	//	//	//mPlayerTetromino = lShape.get();
+	//	//	//mSceneLayers[Plataform]->attachChild(std::move(lShape));
+	//	//	addTetromino(Tetromino::L);
+	//	//}
+	//}
 }
 
 // Only use if you want to change the position of the tetrominos appearing on the view
@@ -193,3 +209,5 @@ sf::FloatRect GameScreen::getGamePlataformBounds() const
 
 	return bounds;
 }
+
+

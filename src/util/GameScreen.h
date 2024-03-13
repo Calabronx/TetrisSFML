@@ -6,6 +6,7 @@
 #include "../nodes/SceneNode.h"
 #include "../entities/Tetromino.h"
 #include <array>
+#include "../input/CommandQueue.h"
 
 namespace sf {
 	class RenderWindow;
@@ -14,9 +15,11 @@ namespace sf {
 class GameScreen : private sf::NonCopyable
 {
 		public:
-			explicit		GameScreen(sf::RenderWindow& window);
-			void			update(sf::Time dt);
-			void			draw();
+			explicit								GameScreen(sf::RenderWindow& window);
+			void									update(sf::Time dt);
+			void									draw();
+
+			CommandQueue&				getCommandQueue();
 
 		private:
 			void			loadResources();
@@ -28,6 +31,8 @@ class GameScreen : private sf::NonCopyable
 			void			addTetromino(Tetromino::Type type);
 			sf::FloatRect	getViewBounds() const;
 			sf::FloatRect	getGamePlataformBounds() const;
+			Tetromino&		getPlayer() const;
+
 
 		private:
 			enum Layer
@@ -51,6 +56,11 @@ class GameScreen : private sf::NonCopyable
 					float y;
 			};
 
+			// deberia ser privado..
+		public:
+			//Player manejar el input con esta clase
+			Tetromino*								mPlayerTetromino;
+
 
 		private:
 			sf::RenderWindow&								mWindow;
@@ -58,8 +68,9 @@ class GameScreen : private sf::NonCopyable
 			//TextureHolder						mTextures;
 
 
-			SceneNode											mSceneGraph;
+			SceneNode												mSceneGraph;
 			std::array<SceneNode*, LayerCount>		mSceneLayers;
+			CommandQueue									mCommandQueue;
 
 			sf::FloatRect									mWorldBounds;
 			sf::Vector2f									mSpawnPosition;
@@ -67,11 +78,10 @@ class GameScreen : private sf::NonCopyable
 
 			std::vector<std::unique_ptr<Tetromino>> mTetrominos;
 			std::vector<std::unique_ptr<Tetromino>> mTetrominosReached;
-			//Player manejar el input con esta clase
-			Tetromino*								mPlayerTetromino;
 
 			std::vector<SpawnPoint>				mTetrominosSpawnPoints;
 			std::vector<Tetromino*>				mActiveTetrominos;
+
 
 };
 #endif // !GAMESCREEN_H

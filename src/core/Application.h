@@ -5,6 +5,7 @@
 #include<SFML/Graphics.hpp>
 #include "../entities/Tetromino.h"
 #include "../util/GameScreen.h"
+#include "../input/Player.h"
 
 class Application
 {
@@ -19,16 +20,15 @@ public:
 	Application();
 	void run();
 private:
-	//void processInput();
-	void processEvents();
+	void processInput();
+	//void processEvents();
 	void update(sf::Time dt);
 	void render();
 
 	void updateStatistics(sf::Time dt);
 	void registerStates();
-	void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
+	//void handlePlayerInput(sf::Keyboard::Key key, bool isPressed);
 	void moveVertexArray(sf::VertexArray& vertexArray, sf::Vector2f offset, sf::Time dt);
-	void testRotation(sf::VertexArray& shape, float angleDegrees, const sf::Vector2f& center);
 	// funcion para manejar rotaciones 
 	// void applyCenterRotation(float angle, sf vector2f& center);
 	// void handleDirection(float angle,
@@ -46,7 +46,7 @@ private:
 	std::vector<std::unique_ptr<Tetromino>> mTetrominosReached;
 
 
-	sf::RectangleShape			mPlayer;
+	Player		mPlayer;
 	sf::RenderWindow			mWindow;
 	GameScreen							mGameScreen;
 	bool									mIsMovingUp;

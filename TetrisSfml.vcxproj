@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -138,22 +138,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="src\core\Application.cpp" />
     <ClCompile Include="src\entities\Entity.cpp" />
     <ClCompile Include="src\entities\Tetromino.cpp" />
+    <ClCompile Include="src\input\Command.cpp" />
+    <ClCompile Include="src\input\CommandQueue.cpp" />
+    <ClCompile Include="src\input\Player.cpp" />
     <ClCompile Include="src\nodes\SceneNode.cpp" />
     <ClCompile Include="src\nodes\SpriteNode.cpp" />
     <ClCompile Include="src\util\DataTables.cpp" />
     <ClCompile Include="src\util\GameScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Player.h" />
     <ClInclude Include="src\core\Application.h" />
     <ClInclude Include="src\entities\Entity.h" />
     <ClInclude Include="src\entities\Tetromino.h" />
+    <ClInclude Include="src\input\Command.hpp" />
+    <ClInclude Include="src\input\CommandQueue.h" />
+    <ClInclude Include="src\input\Player.h" />
     <ClInclude Include="src\nodes\SceneNode.h" />
     <ClInclude Include="src\nodes\SpriteNode.h" />
+    <ClInclude Include="src\util\Category.h" />
     <ClInclude Include="src\util\DataTables.h" />
     <ClInclude Include="src\util\GameScreen.h" />
   </ItemGroup>

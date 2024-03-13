@@ -36,9 +36,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files\src\input</Filter>
-    </ClCompile>
     <ClCompile Include="src\core\Application.cpp">
       <Filter>Source Files\src\core</Filter>
     </ClCompile>
@@ -60,11 +57,17 @@
     <ClCompile Include="src\util\GameScreen.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
+    <ClCompile Include="src\input\Command.cpp">
+      <Filter>Source Files\src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\CommandQueue.cpp">
+      <Filter>Source Files\src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\Player.cpp">
+      <Filter>Source Files\src\input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Player.h">
-      <Filter>Source Files\src\input</Filter>
-    </ClInclude>
     <ClInclude Include="src\core\Application.h">
       <Filter>Source Files\src\core</Filter>
     </ClInclude>
@@ -85,6 +88,18 @@
     </ClInclude>
     <ClInclude Include="src\util\GameScreen.h">
       <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\Command.hpp">
+      <Filter>Source Files\src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Category.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\CommandQueue.h">
+      <Filter>Source Files\src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\Player.h">
+      <Filter>Source Files\src\input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
