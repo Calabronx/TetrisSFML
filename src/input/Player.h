@@ -18,6 +18,7 @@ class Player
 						MoveRight,
 						MoveUp,
 						MoveDown,
+						Rotate,
 						ActionCount
 				};
 

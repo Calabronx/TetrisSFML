@@ -1,22 +1,24 @@
 #include "Tetromino.h"
 #include "../util/DataTables.h"
-#include <iostream>
 
 namespace {
 	const std::vector<TetrominoData> TetrominoTable = initializeTetrominoData();
 }
 
-
 Tetromino::Tetromino(Type type)
 	: mShape(sf::TriangleFan)
 	, mType(type)
 	, mRotation()
+	, mAngle(180.0f)
 	, mVertices(TetrominoTable[type].vertices)
 {
 	for (auto i = 0; i < mVertices.size(); i++) {
 		mShape.append(mVertices[i]);
 		mCenter = findCenter(mShape);
+		setRotation(mAngle);
 	}
+	sf::FloatRect bounds = mShape.getBounds();
+	setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 }
 
 void Tetromino::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
@@ -24,21 +26,15 @@ void Tetromino::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) c
 	target.draw(mShape, states);
 }
 
-void Tetromino::rotate(sf::Transform& transform)
+void Tetromino::rotate()
 {
-	mTransform = transform;
-	std::cout << "rotating" << std::endl;
-	//mTransform.rotate(20.f);
-	//mTransform.transformPoint(mPosition);
-	mRotation.rotate(25.0f);
-
-	mTransform = mRotation;
-}
-
-void Tetromino::applyCenterRotation(float angle)
-{
-	setOrigin(mCenter);
-	setRotation(angle);
+	if (mAngle == 0.0f || mAngle == 90.0f || mAngle == 180 || mAngle == 270.0f) {
+		mAngle += 90.0f;
+	}
+	else {
+		mAngle = 90.0f;
+	}
+	setRotation(mAngle);
 }
 
 void Tetromino::destroy()

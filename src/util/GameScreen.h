@@ -26,13 +26,14 @@ class GameScreen : private sf::NonCopyable
 			void			buildScene();
 			void			spawnTetrominos();
 			void			destroyEntitiesOfView();
+			void			adaptPlayerVelocity();
+			void			adaptPlayerPosition();
+
 			void			addTetrominos();
 			void			addTetromino(Tetromino::Type type, float relX, float relY);
 			void			addTetromino(Tetromino::Type type);
 			sf::FloatRect	getViewBounds() const;
 			sf::FloatRect	getGamePlataformBounds() const;
-			Tetromino&		getPlayer() const;
-
 
 		private:
 			enum Layer

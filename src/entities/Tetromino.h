@@ -28,11 +28,9 @@ class Tetromino : public Entity
 			virtual void								drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 			sf::Transform					mRotation;
 			sf::VertexArray					mShape;
-			sf::Vector2f					mPosition;
 			std::array<sf::Vertex, 8>		mVertices;
 
-			void						rotate(sf::Transform& transform);
-			void						applyCenterRotation(float angle);
+			void						rotate();
 			void						destroy();
 			sf::Vector2f			findCenter(const sf::VertexArray& shape);
 
@@ -47,6 +45,7 @@ class Tetromino : public Entity
 			sf::Vector2f					mCenter;
 			sf::Color						mColor;
 			Type							mType;
+			float							mAngle;
 
 };
 

@@ -1,5 +1,6 @@
 #include "GameScreen.h"
 #include "../entities/Tetromino.h"
+#include <iostream>
 
 GameScreen::GameScreen(sf::RenderWindow& window)
 	: mWindow(window)
@@ -8,7 +9,7 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 	, mSceneGraph()
 	, mSceneLayers()
 	, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, 2000.f)
-	, mSpawnPosition(0.0f, 700.0f)
+	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
 	, mTetrominosSpawnPoints()
 	, mScrollSpeed(-50.f)
 	, mPlayerTetromino(nullptr)
@@ -16,35 +17,36 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 	loadResources();
 	buildScene();
 
-	// prepare the view
 	mWorldView.setCenter(mSpawnPosition);
+	// prepare the view
+	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
+	mPlayerTetromino = lShape.get();*/
+	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
+	mPlayerTetromino = lShape.get();*/
+	//spawnTetrominos();
 }
 
 void GameScreen::update(sf::Time dt)
 {
 	// scroll the world
-	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds());
+	mWorldView.move(0.f, mScrollSpeed * dt.asSeconds());
 
-	 //move player sidewards 
-	sf::Vector2f position = mPlayerTetromino->getPosition();
-	sf::Vector2f velocity = mPlayerTetromino->getVelocity();
+	mPlayerTetromino->setVelocity(0.0f, 0.0f);
 
 	// Forward commands to the scene graph
 	while (!mCommandQueue.isEmpty())
 		mSceneGraph.onCommand(mCommandQueue.pop(), dt);
-	
+	adaptPlayerVelocity();
 
-	// if player touches borders, flip its x velocity
-	// // actualmente se rompe al setear la velocidad o posicion del jugador
-	//if (position.x <= mWorldBounds.left + 150.0f || position.x >= mWorldBounds.left + mWorldBounds.width - 150.f)
-	//{
-	//	velocity.x = -velocity.x;
-	//	//mPlayerTetromino->setVelocity(velocity);
-	//}
+	const float MAX_FLOOR = 540.649f;
+	/*if (velocity.y > MAX_FLOOR) {
+	}
+		*/
 
-	spawnTetrominos();
-
+	//spawnTetrominos();
 	mSceneGraph.update(dt);
+	adaptPlayerPosition();
+
 }
 
 void GameScreen::draw()
@@ -93,7 +95,8 @@ void GameScreen::buildScene()
 
 void GameScreen::spawnTetrominos()
 {
-	// Spawn all tetrominos entering the view area (including distance) this frame
+	// Spawn all tetrominos entering the view area (including distance) this frame 
+	// Tengo que modificar este metodo para que spawnee un nuevo tetromino cuando llega al final de la plataforma
 	while (!mTetrominosSpawnPoints.empty() && mTetrominosSpawnPoints.back().y > getGamePlataformBounds().top)
 	{
 		SpawnPoint spawn = mTetrominosSpawnPoints.back();
@@ -101,7 +104,6 @@ void GameScreen::spawnTetrominos()
 		std::unique_ptr<Tetromino> tetromino(new Tetromino(spawn.type));
 
 		tetromino->setPosition(spawn.x, spawn.y);
-		tetromino->applyCenterRotation(270.0f); // test initial rotation
 
 		mSceneLayers[Plataform]->attachChild(std::move(tetromino));
 
@@ -113,23 +115,52 @@ void GameScreen::destroyEntitiesOfView()
 {
 }
 
+void GameScreen::adaptPlayerVelocity()
+{
+	sf::Vector2f velocity = mPlayerTetromino->getVelocity();
+	if (velocity.x != 0.f && velocity.y != 0.f) {
+		std::cout << "vy " << velocity.y << std::endl;
+		std::cout << "vx " << velocity.x << std::endl;
+		assert(velocity.y != 0.0f);
+		assert(velocity.x != 0.0f);
+		mPlayerTetromino->setVelocity(velocity / std::sqrt(2.f));
+	}
+	assert(mScrollSpeed != 0.f);
+	mPlayerTetromino->moveEntity(0.f,mScrollSpeed);
+
+}
+
+void GameScreen::adaptPlayerPosition()
+{
+	// Keep player's position inside the screen bounds, at least borderDistance units from the border
+	sf::FloatRect viewBounds(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
+	const float borderDistance = 40.f;
+
+	sf::Vector2f position = mPlayerTetromino->getPosition();
+	position.x = std::max(position.x, viewBounds.left + borderDistance);
+	position.x = std::min(position.x, viewBounds.left + viewBounds.width - borderDistance);
+	position.y = std::max(position.y, viewBounds.top + borderDistance);
+	position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
+	mPlayerTetromino->setPosition(position);
+}
+
 void GameScreen::addTetrominos()
 {
-	const int tetrominosCounter = 1;
-	sf::Vector2f centerShape(0.0f, 0.0f);
-
-	sf::Vector2f windowSize(600.f, 600.f);
-	sf::Vector2f centerScreen = windowSize / 2.0f;
-
-	std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-	//mTetrominos.push_back(std::move(lShape));
-	//lShape->setPosition(mSpawnPosition);
-	//lShape->setPosition(0.f, 900.0f);
+	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
 	mPlayerTetromino = lShape.get();
-	//mPlayerTetromino->setPosition(0.0f, 100.0f);
-	//mSceneLayers[Plataform]->attachChild(std::move(lShape));
+	std::unique_ptr<Tetromino> tetromino(new Tetromino(spawn.type));
 
-	addTetromino(mPlayerTetromino->L);
+		tetromino->setPosition(spawn.x, spawn.y);
+
+		mSceneLayers[Plataform]->attachChild(std::move(tetromino));
+	*/
+	std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
+	mPlayerTetromino = lShape.get();
+	mPlayerTetromino->setPosition(mSpawnPosition);
+	mSceneLayers[Plataform]->attachChild(std::move(lShape));
+	//spawnTetrominos();
+	//addTetromino(mPlayerTetromino->L);
+
 	// add random tetrominos
 	//for (auto i = 0; i < tetrominosCounter; i++) {
 	//	int randomId = rand() % 5 + 1;

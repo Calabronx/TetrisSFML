@@ -26,8 +26,9 @@ Player::Player()
 	// Set initial key bindings
 	mKeyBinding[sf::Keyboard::Left] = MoveLeft;
 	mKeyBinding[sf::Keyboard::Right] = MoveRight;
-	mKeyBinding[sf::Keyboard::Up] = MoveUp;
+	//mKeyBinding[sf::Keyboard::Up] = MoveUp;
 	mKeyBinding[sf::Keyboard::Down] = MoveDown;
+	mKeyBinding[sf::Keyboard::R] = Rotate;
 
 	// Set initial action bindings
 	initializeActions();
@@ -81,12 +82,13 @@ sf::Keyboard::Key Player::getAssignedKey(Action action) const
 
 void Player::initializeActions()
 {
-	const float playerSpeed = 200.f;
+	const float playerSpeed = 50.f;
 
 	mActionBinding[MoveLeft].action	 = derivedAction<Tetromino>(TetrominoMover(-playerSpeed, 0.f));
 	mActionBinding[MoveRight].action = derivedAction<Tetromino>(TetrominoMover(+playerSpeed, 0.f));
-	mActionBinding[MoveUp].action	 = derivedAction<Tetromino>(TetrominoMover(0.f , -playerSpeed));
+	//mActionBinding[MoveUp].action	 = derivedAction<Tetromino>(TetrominoMover(0.f , -playerSpeed));
 	mActionBinding[MoveDown].action	 = derivedAction<Tetromino>(TetrominoMover(0.f , +playerSpeed));
+	mActionBinding[Rotate].action	 = derivedAction<Tetromino>([](Tetromino& t, sf::Time) { t.rotate(); });
 }
 
 bool Player::isRealtimeAction(Action action)
@@ -96,7 +98,8 @@ bool Player::isRealtimeAction(Action action)
 			case MoveLeft:
 			case MoveRight:
 			case MoveDown:
-			case MoveUp:
+			//case MoveUp:
+
 					return true;
 			
 			default:

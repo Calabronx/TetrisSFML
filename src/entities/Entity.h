@@ -13,15 +13,10 @@ class Entity : public SceneNode
 			void							setVelocity(float vx, float vy);
 			void							moveEntity(sf::Vector2f velocity);
 			void							moveEntity(float vx,float vy);
-			void							setTransform(sf::Transform transform);
 			sf::Vector2f				getVelocity() const;
-			sf::Transform				getTransform() const;
 
 		private:
 			virtual void updateCurrent(sf::Time dt);
-
-		public:
-			sf::Transform		mTransform;
 
 		private:
 			sf::Vector2f		mVelocity;
