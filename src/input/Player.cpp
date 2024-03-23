@@ -42,6 +42,7 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 	if (event.type == sf::Event::KeyPressed)
 	{
 		std::cout << "event" << std::endl;
+		//commands.push(mActionBinding[MoveDown]);
 		// Check if pressed key appears in key binding, trigger command if so
 		auto found = mKeyBinding.find(event.key.code);
 		if (found != mKeyBinding.end() && !isRealtimeAction(found->second))
@@ -51,6 +52,8 @@ void Player::handleEvent(const sf::Event& event, CommandQueue& commands)
 
 void Player::handleRealtimeInput(CommandQueue& commands)
 {
+	commands.push(mActionBinding[MoveDown]); // move the tetromino automatically to the ground
+
 	for (auto pair : mKeyBinding)
 		if (sf::Keyboard::isKeyPressed(pair.first) && isRealtimeAction(pair.second))
 			commands.push(mActionBinding[pair.second]);
@@ -66,7 +69,7 @@ void Player::assignKey(Action action, sf::Keyboard::Key key)
 		else
 					++itr;
 	}
-
+	
 	// Insert new binding
 	mKeyBinding[key] = action;
 }
@@ -82,12 +85,12 @@ sf::Keyboard::Key Player::getAssignedKey(Action action) const
 
 void Player::initializeActions()
 {
-	const float playerSpeed = 50.f;
+	const float playerSpeed = 200.f;
 
 	mActionBinding[MoveLeft].action	 = derivedAction<Tetromino>(TetrominoMover(-playerSpeed, 0.f));
 	mActionBinding[MoveRight].action = derivedAction<Tetromino>(TetrominoMover(+playerSpeed, 0.f));
 	//mActionBinding[MoveUp].action	 = derivedAction<Tetromino>(TetrominoMover(0.f , -playerSpeed));
-	mActionBinding[MoveDown].action	 = derivedAction<Tetromino>(TetrominoMover(0.f , +playerSpeed));
+	mActionBinding[MoveDown].action	 = derivedAction<Tetromino>(TetrominoMover(0.f , 100));
 	mActionBinding[Rotate].action	 = derivedAction<Tetromino>([](Tetromino& t, sf::Time) { t.rotate(); });
 }
 
