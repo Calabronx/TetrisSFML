@@ -7,12 +7,14 @@
 #include<SFML/Graphics.hpp>
 #include "../util/Category.h"
 #include "../input/Command.hpp"
+#include <set>
 //#include "../input/CommandQueue.h"
 
 class SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable
 {
 		public:
 			typedef std::unique_ptr<SceneNode> Ptr;
+			typedef std::pair<SceneNode*, SceneNode*> Pair;
 
 		public:
 													SceneNode();
@@ -25,7 +27,17 @@ class SceneNode : public sf::Transformable, public sf::Drawable, private sf::Non
 			sf::Transform			getWorldTransform() const;
 
 			void											onCommand(const Command& command, sf::Time dt);
-			virtual unsigned int			getCategory() const;
+
+
+			virtual unsigned int	getCategory() const;
+
+			void							checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs);
+			void							checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs);
+
+
+			virtual sf::FloatRect	getBoundingRect() const;
+			virtual bool isDestroyed() const;
+			virtual bool isMarkedForRemoval() const;
 
 		private:
 			virtual void			updateCurrent(sf::Time dt);
@@ -40,5 +52,8 @@ class SceneNode : public sf::Transformable, public sf::Drawable, private sf::Non
 			SceneNode*						mParent;
 			
 };
+
+bool collision(const SceneNode& lhs, const SceneNode& rhs);
+float distance(const SceneNode& lhs, const SceneNode& rhs);
 #endif // !SCENENODE_H
 

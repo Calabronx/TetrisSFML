@@ -23,7 +23,7 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 	mPlayerTetromino = lShape.get();*/
 	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
 	mPlayerTetromino = lShape.get();*/
-	//spawnTetrominos();
+	spawnTetrominos();
 }
 
 void GameScreen::update(sf::Time dt)
@@ -42,8 +42,8 @@ void GameScreen::update(sf::Time dt)
 	/*if (velocity.y > MAX_FLOOR) {
 	}
 		*/
-
-	//spawnTetrominos();
+	//if(mPlayerTetromino.)
+	spawnTetrominos();
 	mSceneGraph.update(dt);
 	adaptPlayerPosition();
 
@@ -105,6 +105,8 @@ void GameScreen::spawnTetrominos()
 
 		tetromino->setPosition(spawn.x, spawn.y);
 
+		mPlayerTetromino = tetromino.get();
+
 		mSceneLayers[Plataform]->attachChild(std::move(tetromino));
 
 		mTetrominosSpawnPoints.pop_back();
@@ -144,6 +146,52 @@ void GameScreen::adaptPlayerPosition()
 	mPlayerTetromino->setPosition(position);
 }
 
+void GameScreen::handleCollisions()
+{
+	std::set<SceneNode::Pair> collisionPairs;
+	mSceneGraph.checkSceneCollision(mSceneGraph, collisionPairs);
+
+	for (SceneNode::Pair pair : collisionPairs)
+	{
+		// if tetromino lands to the floor
+		if (matchesCategories(pair, Category::PlayerTetromino, Category::LandedTetromino)) {
+			auto& player = static_cast<Tetromino&>(*pair.first);
+			auto& landedTetromino = static_cast<Tetromino&>(*pair.second);
+			/*std::unique_ptr<Tetromino> playerTetro = std::make_unique<Tetromino>(std::move(player));
+			mTetrominosLanded.push_back(playerTetro);
+			mPlayerTetromino->destroy();*/
+		}
+		else if (matchesCategories(pair, Category::PlayerTetromino, Category::Floor)) {
+			auto& player = static_cast<Tetromino&>(*pair.first);
+			//auto& floor = static_cast<Tetromino&>(*pair.second);
+			/*std::unique_ptr<Tetromino> playerTetro = std::make_unique<Tetromino>(std::move(player));
+			mTetrominosLanded.push_back(playerTetro);
+			mPlayerTetromino->destroy();*/
+		}
+	}
+}
+
+bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2)
+{
+	unsigned int category1 = colliders.first->getCategory();
+	unsigned int category2 = colliders.second->getCategory();
+
+	// Make sure first pair entry has category type1 and second has type2
+	if (type1 & category1 && type2 & category2)
+	{
+		return true;
+	}
+	else if (type1 & category2 && type2 & category1)
+	{
+		std::swap(colliders.first, colliders.second);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void GameScreen::addTetrominos()
 {
 	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
@@ -154,12 +202,12 @@ void GameScreen::addTetrominos()
 
 		mSceneLayers[Plataform]->attachChild(std::move(tetromino));
 	*/
-	std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
+	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
 	mPlayerTetromino = lShape.get();
 	mPlayerTetromino->setPosition(mSpawnPosition);
-	mSceneLayers[Plataform]->attachChild(std::move(lShape));
+	mSceneLayers[Plataform]->attachChild(std::move(lShape));*/
 	//spawnTetrominos();
-	//addTetromino(mPlayerTetromino->L);
+	addTetromino(mPlayerTetromino->L);
 
 	// add random tetrominos
 	//for (auto i = 0; i < tetrominosCounter; i++) {

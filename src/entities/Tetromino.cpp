@@ -39,6 +39,7 @@ void Tetromino::rotate()
 
 void Tetromino::destroy()
 {
+	delete(this);
 }
 
 sf::Vector2f Tetromino::findCenter(const sf::VertexArray& vertices) {
@@ -61,6 +62,11 @@ sf::Vector2f Tetromino::getCenter() const
 void Tetromino::setCenter(sf::Vector2f& center)
 {
 	mCenter = center;
+}
+
+sf::FloatRect Tetromino::getBoundingRect() const
+{
+	return getWorldTransform().transformRect(mShape.getBounds());
 }
 
 unsigned int Tetromino::getCategory() const

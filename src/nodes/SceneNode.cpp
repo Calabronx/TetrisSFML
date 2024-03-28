@@ -59,6 +59,38 @@ unsigned int SceneNode::getCategory() const
 	return Category::Scene;
 }
 
+void SceneNode::checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs)
+{
+	if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed())
+		collisionPairs.insert(std::minmax(this, &node));
+
+	for (Ptr& child : mChildren)
+		child->checkNodeCollision(node, collisionPairs);
+}
+
+void SceneNode::checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& collisionPairs)
+{
+	checkNodeCollision(sceneGraph, collisionPairs);
+
+	for (Ptr& child : sceneGraph.mChildren)
+		checkNodeCollision(*child, collisionPairs);
+}
+
+sf::FloatRect SceneNode::getBoundingRect() const
+{
+	return sf::FloatRect();
+}
+
+bool SceneNode::isDestroyed() const
+{
+	return false;
+}
+
+bool SceneNode::isMarkedForRemoval() const
+{
+	return isDestroyed();
+}
+
 void SceneNode::updateCurrent(sf::Time dt)
 {
 	// do nothing by default
@@ -89,4 +121,14 @@ void SceneNode::drawChildren(sf::RenderTarget& target, sf::RenderStates states) 
 {
 	for (const Ptr& child : mChildren)
 		child->draw(target, states);
+}
+
+bool collision(const SceneNode& lhs, const SceneNode& rhs)
+{
+	return lhs.getBoundingRect().intersects(rhs.getBoundingRect());
+}
+
+float distance(const SceneNode& lhs, const SceneNode& rhs)
+{
+	return 0.0f;
 }

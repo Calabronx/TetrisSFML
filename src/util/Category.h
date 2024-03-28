@@ -8,6 +8,8 @@ namespace Category {
 		None						= 0,
 		Scene						= 1 << 0,
 		PlayerTetromino		= 1 << 1,
+		LandedTetromino		= 1 << 2,
+		Floor				= 1 << 3
 	};
 }
 

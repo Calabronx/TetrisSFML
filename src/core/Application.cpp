@@ -5,7 +5,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Application::Application()
-	: mWindow(sf::VideoMode(640, 480), "Window Title", sf::Style::Close)
+	: mWindow(sf::VideoMode(640, 480), "Tetris", sf::Style::Close)
 	, mGameScreen(mWindow)
 	, mPlayer()
 {

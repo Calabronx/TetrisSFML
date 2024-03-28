@@ -28,6 +28,7 @@ class GameScreen : private sf::NonCopyable
 			void			destroyEntitiesOfView();
 			void			adaptPlayerVelocity();
 			void			adaptPlayerPosition();
+			void handleCollisions();
 
 			void			addTetrominos();
 			void			addTetromino(Tetromino::Type type, float relX, float relY);
@@ -78,12 +79,13 @@ class GameScreen : private sf::NonCopyable
 			float													mScrollSpeed;
 
 			std::vector<std::unique_ptr<Tetromino>> mTetrominos;
-			std::vector<std::unique_ptr<Tetromino>> mTetrominosReached;
+			std::vector<std::unique_ptr<Tetromino>> mTetrominosLanded;
 
 			std::vector<SpawnPoint>				mTetrominosSpawnPoints;
 			std::vector<Tetromino*>				mActiveTetrominos;
 
 
 };
+bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Category::Type type2);
 #endif // !GAMESCREEN_H
 

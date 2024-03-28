@@ -37,6 +37,7 @@ class Tetromino : public Entity
 
 			sf::Vector2f		getCenter() const;
 			void				setCenter(sf::Vector2f& center);
+			virtual sf::FloatRect getBoundingRect() const;
 		private:
 
 
