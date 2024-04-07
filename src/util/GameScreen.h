@@ -58,6 +58,27 @@ class GameScreen : private sf::NonCopyable
 					float y;
 			};
 
+			struct GameLimit : public Entity // deberia analizar si es necesario heredar de Entity
+			{
+				GameLimit(sf::FloatRect rect,Category::Type type)
+					:rect(rect),type(type)
+				{
+				}	
+				GameLimit(sf::RectangleShape shape,Category::Type type)
+					:shape(shape),type(type)
+				{
+				}
+				Category::Type type;
+				sf::FloatRect rect;
+				sf::RectangleShape shape;
+				virtual sf::FloatRect getBoundingRect() const {
+					return getWorldTransform().transformRect(shape.getLocalBounds());
+				}
+				virtual unsigned int getCategory() const {
+					return Category::Floor;
+				}
+			};
+
 			// deberia ser privado..
 		public:
 			//Player manejar el input con esta clase
@@ -83,6 +104,8 @@ class GameScreen : private sf::NonCopyable
 
 			std::vector<SpawnPoint>				mTetrominosSpawnPoints;
 			std::vector<Tetromino*>				mActiveTetrominos;
+			std::unique_ptr<GameLimit>			mFloorLimit;
+			
 
 
 };

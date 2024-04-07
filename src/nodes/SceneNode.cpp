@@ -1,9 +1,11 @@
 #include "SceneNode.h"
 #include <cassert>
+#include <iostream>
 
-SceneNode::SceneNode()
+SceneNode::SceneNode(Category::Type category)
 	: mChildren()
 	, mParent(nullptr)
+	, mDefaultCategory(category)
 {
 }
 
@@ -56,13 +58,17 @@ void SceneNode::onCommand(const Command& command, sf::Time dt)
 
 unsigned int SceneNode::getCategory() const
 {
-	return Category::Scene;
+	return mDefaultCategory;
 }
 
 void SceneNode::checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs)
 {
-	if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed())
+	if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed()) {
+		std::cout << "this node : " << this->mDefaultCategory << std::endl;
+		std::cout << "parameter node : " << node.mDefaultCategory << std::endl;
+		std::cout << "collision count: " << collisionPairs.size()<< std::endl;
 		collisionPairs.insert(std::minmax(this, &node));
+	}
 
 	for (Ptr& child : mChildren)
 		child->checkNodeCollision(node, collisionPairs);
@@ -73,7 +79,7 @@ void SceneNode::checkSceneCollision(SceneNode& sceneGraph, std::set<Pair>& colli
 	checkNodeCollision(sceneGraph, collisionPairs);
 
 	for (Ptr& child : sceneGraph.mChildren)
-		checkNodeCollision(*child, collisionPairs);
+		checkSceneCollision(*child, collisionPairs);
 }
 
 sf::FloatRect SceneNode::getBoundingRect() const

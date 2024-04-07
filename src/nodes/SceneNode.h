@@ -17,7 +17,7 @@ class SceneNode : public sf::Transformable, public sf::Drawable, private sf::Non
 			typedef std::pair<SceneNode*, SceneNode*> Pair;
 
 		public:
-													SceneNode();
+													SceneNode(Category::Type category = Category::None);
 			void						attachChild(Ptr child);
 			Ptr									detachChild(const SceneNode& node);
 
@@ -50,6 +50,7 @@ class SceneNode : public sf::Transformable, public sf::Drawable, private sf::Non
 		private:
 			std::vector<Ptr>		mChildren;
 			SceneNode*						mParent;
+			Category::Type			mDefaultCategory;
 			
 };
 

@@ -9,6 +9,7 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 	, mSceneGraph()
 	, mSceneLayers()
 	, mWorldBounds(0.f, 0.f, mWorldView.getSize().x, 2000.f)
+	, mFloorLimit(nullptr)
 	, mSpawnPosition(mWorldView.getSize().x / 2.f, mWorldBounds.height - mWorldView.getSize().y / 2.f)
 	, mTetrominosSpawnPoints()
 	, mScrollSpeed(-50.f)
@@ -18,6 +19,7 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 	buildScene();
 
 	mWorldView.setCenter(mSpawnPosition);
+
 	// prepare the view
 	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
 	mPlayerTetromino = lShape.get();*/
@@ -29,7 +31,7 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 void GameScreen::update(sf::Time dt)
 {
 	// scroll the world
-	mWorldView.move(0.f, mScrollSpeed * dt.asSeconds());
+	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds());
 
 	mPlayerTetromino->setVelocity(0.0f, 0.0f);
 
@@ -38,11 +40,8 @@ void GameScreen::update(sf::Time dt)
 		mSceneGraph.onCommand(mCommandQueue.pop(), dt);
 	adaptPlayerVelocity();
 
-	const float MAX_FLOOR = 540.649f;
-	/*if (velocity.y > MAX_FLOOR) {
-	}
-		*/
-	//if(mPlayerTetromino.)
+	handleCollisions();
+
 	spawnTetrominos();
 	mSceneGraph.update(dt);
 	adaptPlayerPosition();
@@ -51,9 +50,29 @@ void GameScreen::update(sf::Time dt)
 
 void GameScreen::draw()
 {
+	float bottomSide = mWorldBounds.height / 2;
+	//sf::FloatRect floor(0.f, 0.f, 0.f, mWorldBounds.height);
+	////mFloorLimit = std::make_unique<GameLimit>(floor, Category::Floor);
+	//std::unique_ptr<GameLimit> floorLimit(new GameLimit(floor, Category::Floor));
+	//floorLimit->setPosition(mWorldBounds.left, bottomSide);
+
+	//sf::RectangleShape shape;
+	//shape.setPosition(sf::Vector2f(0.f, bottomSide));
+	//shape.setSize(sf::Vector2f(floorLimit->rect.width / 2, floorLimit->rect.height));
+	//shape.setFillColor(sf::Color::Transparent);
+	//shape.setOutlineColor(sf::Color::Green);
+	//shape.setOutlineThickness(1.f);
+	/*sf::RectangleShape shape;
+	shape.setSize(sf::Vector2f(640, 50));
+	shape.setOutlineColor(sf::Color::Blue);
+	shape.setOutlineThickness(1.f);
+	shape.setFillColor(sf::Color::Transparent);
+	shape.setPosition(sf::Vector2f(5, 475));
+	mWindow.draw(shape);*/
 
 	mWindow.setView(mWorldView);
 	mWindow.draw(mSceneGraph);
+
 }
 
 CommandQueue& GameScreen::getCommandQueue()
@@ -70,11 +89,46 @@ void GameScreen::buildScene()
 
 	for (std::size_t i = 0; i < LayerCount; ++i)
 	{
-		SceneNode::Ptr layer(new SceneNode());
+		Category::Type category = (i == Plataform) ? Category::ScenePlataformLayer : Category::None;
+
+		SceneNode::Ptr layer(new SceneNode(category));
 		mSceneLayers[i] = layer.get();
 
 		mSceneGraph.attachChild(std::move(layer));
 	}
+	float bottomSide = mWorldBounds.top + mWorldBounds.left;
+	sf::FloatRect floor(0.f, 0.f, bottomSide, mWorldBounds.height);
+
+	sf::RectangleShape shape;
+	shape.setSize(sf::Vector2f(640, 50));
+	shape.setOutlineColor(sf::Color::Red);
+	shape.setOutlineThickness(1.f);
+	shape.setFillColor(sf::Color::Transparent);
+	shape.setPosition(sf::Vector2f(0.f, 1960));
+	std::unique_ptr<GameLimit> floorLimit(new GameLimit(shape, Category::Floor));
+	//floorLimit->setPosition(0.f, 1960);
+	mFloorLimit.reset(floorLimit.get());
+	mFloorLimit->setPosition(0.f, 1960);
+
+	mSceneLayers[Plataform]->attachChild(std::move(floorLimit));
+	/*sf::RectangleShape shape;
+	shape.setSize(sf::Vector2f(640, 50));
+	shape.setOutlineColor(sf::Color::Red);
+	shape.setOutlineThickness(1.f);
+	shape.setFillColor(sf::Color::Transparent);
+	shape.setPosition(sf::Vector2f(320.000000f, 1760.0f));
+	std::unique_ptr<GameLimit> floorLimit(new GameLimit(shape, Category::Floor));
+	floorLimit->setPosition(5, 475);
+
+	//mFloorLimit = std::make_unique<GameLimit>(floor, Category::Floor);
+	//std::unique_ptr<GameLimit> floorLimit(new GameLimit(floor, Category::Floor));
+
+	
+	////mFloorLimit = std::make_unique<GameLimit>(floor, Category::Floor);
+	//std::unique_ptr<sf::RectangleShape> shapePointer(new sf::RectangleShape(shape));
+	/*floorLimit->setScale(sf::Vector2f(640, 50));
+	floorLimit->setPosition(5, 475);*/
+	//mSceneGraph.attachChild(std::move(floorLimit));
 
 	addTetrominos();
 
@@ -150,6 +204,25 @@ void GameScreen::handleCollisions()
 {
 	std::set<SceneNode::Pair> collisionPairs;
 	mSceneGraph.checkSceneCollision(mSceneGraph, collisionPairs);
+	sf::FloatRect viewBounds(sf::Vector2f(0.f, 1960), sf::Vector2f(640, 50));
+
+	sf::RectangleShape shape;
+	shape.setSize(sf::Vector2f(640, 50));
+	shape.setOutlineColor(sf::Color::Red);
+	shape.setOutlineThickness(1.f);
+	shape.setFillColor(sf::Color::Transparent);
+	shape.setPosition(sf::Vector2f(0.f, 1960));
+	std::unique_ptr<GameLimit> floorLimit(new GameLimit(shape, Category::Floor));
+
+	floorLimit->setPosition(0.f, 1960);
+	
+	bool test = mPlayerTetromino->getBoundingRect().intersects(floorLimit->getBoundingRect());
+	auto cat = floorLimit->type;
+	//bool math = matchesCategories()
+
+	/*if (test) {
+		std::cout << "Player reached floor" << std::endl;
+	}*/
 
 	for (SceneNode::Pair pair : collisionPairs)
 	{
@@ -163,11 +236,11 @@ void GameScreen::handleCollisions()
 		}
 		else if (matchesCategories(pair, Category::PlayerTetromino, Category::Floor)) {
 			auto& player = static_cast<Tetromino&>(*pair.first);
-			//auto& floor = static_cast<Tetromino&>(*pair.second);
-			/*std::unique_ptr<Tetromino> playerTetro = std::make_unique<Tetromino>(std::move(player));
-			mTetrominosLanded.push_back(playerTetro);
-			mPlayerTetromino->destroy();*/
-		}
+			auto& floor = static_cast<GameLimit&>(*pair.second);
+			//std::unique_ptr<Tetromino> playerTetro = std::make_unique<Tetromino>(std::move(mPlayerTetromino));
+			//mTetrominosLanded.push_back(std::move(playerTetro));
+			//mPlayerTetromino->destroy();
+		} 
 	}
 }
 
