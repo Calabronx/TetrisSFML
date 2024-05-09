@@ -103,7 +103,7 @@ class GameScreen : private sf::NonCopyable
 			std::vector<std::unique_ptr<Tetromino>> mTetrominosLanded;
 
 			std::vector<SpawnPoint>				mTetrominosSpawnPoints;
-			std::vector<Tetromino*>				mActiveTetrominos;
+			//std::vector<Tetromino&>				mActiveTetrominos;
 			std::unique_ptr<GameLimit>			mFloorLimit;
 			
 

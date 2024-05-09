@@ -4,6 +4,7 @@
 
 #include "Entity.h"
 #include <array>
+#include "../input/CommandQueue.h"
 
 class Tetromino : public Entity
 {
@@ -32,13 +33,18 @@ class Tetromino : public Entity
 
 			void						rotate();
 			void						destroy();
+			void						reachGround();
 			sf::Vector2f			findCenter(const sf::VertexArray& shape);
 
 
 			sf::Vector2f		getCenter() const;
 			void				setCenter(sf::Vector2f& center);
+			bool				isTetrominoGrounded() const;
+			void				setCategory(Category::Type type);
+	
 			virtual sf::FloatRect getBoundingRect() const;
 		private:
+			//virtual void updateCurrent(sf::Time dt, CommandQueue& commands);
 
 
 		private:
@@ -46,7 +52,9 @@ class Tetromino : public Entity
 			sf::Vector2f					mCenter;
 			sf::Color						mColor;
 			Type							mType;
+			Category::Type					mCategory;
 			float							mAngle;
+			bool							mIsGrounded;
 
 };
 

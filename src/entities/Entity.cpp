@@ -2,6 +2,13 @@
 #include <regex>
 #include <iostream>
 
+Entity::Entity()
+	: mVelocity()
+	, mLifes(1)
+	, mIsLanded(false)
+{
+}
+
 void Entity::setVelocity(sf::Vector2f velocity)
 {
 	mVelocity = velocity;
@@ -31,7 +38,29 @@ sf::Vector2f Entity::getVelocity() const
 	return mVelocity;
 }
 
+void Entity::destroy()
+{
+	//mIsInactive = true;
+	mLifes = 0;
+}
+
+void Entity::land()
+{
+	mIsLanded = true;
+}
+
+bool Entity::isDestroyed() const
+{
+	return mLifes <= 0 ? true : false;
+}
+
+bool Entity::isLanded() const
+{
+	return mIsLanded;
+}
+
 void Entity::updateCurrent(sf::Time dt)
 {
-	move(mVelocity * dt.asSeconds());
+	if (!mIsLanded)
+		move(mVelocity * dt.asSeconds());
 }

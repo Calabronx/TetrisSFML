@@ -64,9 +64,9 @@ unsigned int SceneNode::getCategory() const
 void SceneNode::checkNodeCollision(SceneNode& node, std::set<Pair>& collisionPairs)
 {
 	if (this != &node && collision(*this, node) && !isDestroyed() && !node.isDestroyed()) {
-		std::cout << "this node : " << this->mDefaultCategory << std::endl;
+		/*std::cout << "this node : " << this->mDefaultCategory << std::endl;
 		std::cout << "parameter node : " << node.mDefaultCategory << std::endl;
-		std::cout << "collision count: " << collisionPairs.size()<< std::endl;
+		std::cout << "collision count: " << collisionPairs.size()<< std::endl;*/
 		collisionPairs.insert(std::minmax(this, &node));
 	}
 
@@ -108,6 +108,20 @@ void SceneNode::updateChildren(sf::Time dt)
 		child->update(dt);
 }
 
+void SceneNode::drawBoundingRect(sf::RenderTarget& target, sf::RenderStates) const
+{
+	sf::FloatRect rect = getBoundingRect();
+
+	sf::RectangleShape shape;
+	shape.setPosition(sf::Vector2f(rect.left, rect.top));
+	shape.setSize(sf::Vector2f(rect.width, rect.height));
+	shape.setFillColor(sf::Color::Transparent);
+	shape.setOutlineColor(sf::Color::Green);
+	shape.setOutlineThickness(1.f);
+
+	target.draw(shape);
+}
+
 void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	// apply transform of current node
@@ -116,6 +130,8 @@ void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	// draw node and children with changed transform
 	drawCurrent(target, states);
 	drawChildren(target, states);
+
+	drawBoundingRect(target, states);
 }
 
 void SceneNode::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const

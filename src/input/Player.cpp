@@ -14,6 +14,7 @@ struct TetrominoMover
 
 	void operator() (Tetromino& tetromino, sf::Time) const
 	{
+		//std::cout << tetromino.isTetrominoGrounded() << " " <<  velocity.y << std::endl;
 		tetromino.moveEntity(velocity); // deberia ser otra funcion, para mover el tetromino como el accelerate en el libro SFML
 	}
 
