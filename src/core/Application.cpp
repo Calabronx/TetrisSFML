@@ -56,7 +56,7 @@ void Application::update(sf::Time dt)
 
 void Application::render()
 {
-	mWindow.clear(sf::Color(18, 33, 43)); // Color background
+	mWindow.clear(sf::Color(55, 55, 55, 255)); // Color background
 
 	mGameScreen.draw();
 	mWindow.setView(mWindow.getDefaultView());

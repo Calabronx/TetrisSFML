@@ -31,20 +31,11 @@ GameScreen::GameScreen(sf::RenderWindow& window)
 	std::cout << "SPAWN POSITION X: " << t1 << std::endl;
 	std::cout << "SPAWN POSITION Y: " << t2 << std::endl;
 
-	//mSpawnPosition.y += 50.f;
-	// prepare the view
-	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-	mPlayerTetromino = lShape.get();*/
-	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-	mPlayerTetromino = lShape.get();*/
 	spawnTetrominos();
 }
 
 void GameScreen::update(sf::Time dt)
 {
-	// scroll the world
-	//mWorldView.move(0.f, mScrollSpeed * dt.asSeconds());
-
 	mPlayerTetromino->setVelocity(0.0f, 0.0f);
 
 	// Forward commands to the scene graph
@@ -55,14 +46,9 @@ void GameScreen::update(sf::Time dt)
 	}
 
 	handleCollisions();
-
-	//std::cout << mPlayerTetromino->getPosition().y << std::endl;
-
 	spawnTetrominos();
 	mSceneGraph.update(dt);
 	adaptPlayerPosition();
-
-
 
 }
 
@@ -112,48 +98,9 @@ void GameScreen::buildScene()
 
 	tetromino->setPosition(mSpawnPosition.x, mSpawnPosition.y);
 
-	//mPlayerTetromino = nullptr;
-
-	/*if(mPlayerTetromino == nullptr)
-		mPlayerTetromino = tetromino.get();*/
-
 	mPlayerTetromino = tetromino.get();
-	//mSceneLayers[Plataform]->attachChild(std::move(tetromino));
-
-	/*sf::RectangleShape shape;
-	shape.setSize(sf::Vector2f(640, 50));
-	shape.setOutlineColor(sf::Color::Red);
-	shape.setOutlineThickness(1.f);
-	shape.setFillColor(sf::Color::Transparent);
-	shape.setPosition(sf::Vector2f(320.000000f, 1760.0f));
-	std::unique_ptr<GameLimit> floorLimit(new GameLimit(shape, Category::Floor));
-	floorLimit->setPosition(5, 475);
-
-	//mFloorLimit = std::make_unique<GameLimit>(floor, Category::Floor);
-	//std::unique_ptr<GameLimit> floorLimit(new GameLimit(floor, Category::Floor));
-
-	
-	////mFloorLimit = std::make_unique<GameLimit>(floor, Category::Floor);
-	//std::unique_ptr<sf::RectangleShape> shapePointer(new sf::RectangleShape(shape));
-	/*floorLimit->setScale(sf::Vector2f(640, 50));
-	floorLimit->setPosition(5, 475);*/
-	//mSceneGraph.attachChild(std::move(floorLimit));
 
 	addTetrominos();
-
-
-	//sf::Vector2f windowSize(600.f, 600.f);
-	//sf::Vector2f centerScreen = windowSize / 2.0f;
-
-
-	//sf::Vector2f tetrominoCenter = mTetrominos[i]->getCenter();
-	/*sf::Vector2f offsetToCenter = centerScreen - tetrominoCenter;
-	sf::Vector2f moveToTop(offsetToCenter.x, offsetToCenter.y - 300.f);*/
-
-	/*for (std::size_t j = 0; j < mTetrominos[i]->mShape.getVertexCount(); j++) {
-		mTetrominos[i]->mShape[j].position += moveToTop;
-	}*/
-
 }
 
 void GameScreen::spawnTetrominos()
@@ -164,28 +111,12 @@ void GameScreen::spawnTetrominos()
 	{
 		SpawnPoint spawn = mTetrominosSpawnPoints.back();
 
-		//std::unique_ptr<Tetromino> tetromino(new Tetromino(spawn.type));
 		std::unique_ptr<Tetromino> newTetromino(new Tetromino(spawn.type));
 
-		//tetromino->setPosition(spawn.x, spawn.y);
 		newTetromino->setPosition(spawn.x, spawn.y - 1000);
-		/*delete(mPlayerTetromino);*/
 		mPlayerTetromino = nullptr;
 		mPlayerTetromino = newTetromino.get();
-	/*	delete(mPlayerTetromino);
-		
-		/*Tetromino* tetro = new Tetromino(spawn.type);
-
-		mPlayerTetromino = tetro;*/
-	/*	if (mPlayerTetromino == nullptr) {
-			mPlayerTetromino = newTetromino.get();
-		}*/
-		//mPlayerTetromino = test;
 		mSceneLayers[Plataform]->attachChild(std::move(newTetromino));
-
-		//mPlayerTetromino.set
-		/*mFloorLimit->attachChild(std::move(testTetromino));*/
-
 
 		mTetrominosSpawnPoints.pop_back();
 	}
@@ -199,8 +130,6 @@ void GameScreen::adaptPlayerVelocity()
 {
 	sf::Vector2f velocity = mPlayerTetromino->getVelocity();
 	if (velocity.x != 0.f && velocity.y != 0.f) {
-	/*	std::cout << "vy " << velocity.y << std::endl;
-		std::cout << "vx " << velocity.x << std::endl;*/
 		assert(velocity.y != 0.0f);
 		assert(velocity.x != 0.0f);
 		mPlayerTetromino->setVelocity(velocity / std::sqrt(2.f));
@@ -209,7 +138,7 @@ void GameScreen::adaptPlayerVelocity()
 	assert(mScrollSpeed < 0.f);
 
 
-	mPlayerTetromino->moveEntity(0.f,mScrollSpeed);
+	mPlayerTetromino->moveEntity(0.f, mScrollSpeed);
 
 
 }
@@ -243,7 +172,7 @@ void GameScreen::handleCollisions()
 	std::unique_ptr<GameLimit> floorLimit(new GameLimit(shape, Category::Floor));
 
 	floorLimit->setPosition(0.f, 1960);
-	
+
 	bool test = mPlayerTetromino->getBoundingRect().intersects(floorLimit->getBoundingRect());
 	auto cat = floorLimit->type;
 
@@ -257,92 +186,26 @@ void GameScreen::handleCollisions()
 
 			mPlayerTetromino->reachGround();
 
-			sf::Vector2f playerPosition = player.getPosition();
-			sf::Vector2f landedPosition = landedTetromino.getPosition();
-
-			float newYPosition = landedPosition.y - player.getBoundingRect().height;
-			playerPosition.y = std::max(playerPosition.y, newYPosition);
-
-			sf::Vector2f apileVector(playerPosition.x, playerPosition.y);
-
-			player.setPosition(apileVector);
-
-			addTetromino(Tetromino::T);
+			addTetrominos();
 		}
-
-		//else if (matchesCategories(pair, Category::LandedTetromino, Category::LandedTetromino)) {
-		//	/**
-		//			begin
-		//				obtengo la ref del tetromino jugador
-		//				obtengo la ref del tetromino plantado
-		//
-		//				obtengo la posicion del tetromino jugador
-		//				obtengo la posicion del tetromino plantado
-		//
-		//				calculo la posicion del tetromino plantado para poder obtener su superficie
-		//
-
-
-		//				defino vector para pasarle la posicion de plantado calculada
-		//
-		//				seteo la posicion de plantado al tetromino jugador
-		//			end
-
-		//			hacer que el tetromino que colisiona con otro, mantenga su ultima posicion(por encima del estacionado)
-
-		//			begin
-		//				detecto colsion
-		//				calculo vectores de tetromino jugador y tetromino estacionado
-		//				seteo la ultima posicion exacta del tetromino jugador
-		//				seteo la ultima posicion
-		//			end
-		//	**/
-		//	sf::FloatRect viewBounds(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
-
-		//	auto& tetroLandedFirst = static_cast<Tetromino&>(*pair.first);
-		//	auto& tetroLandedSecond = static_cast<Tetromino&>(*pair.second);
-
-		//	std::cout << "LANDED WITH LANDED " << std::endl;
-		//	std::cout << "tetroLandedFirst.getBoundingRect().width " << tetroLandedFirst.getBoundingRect().width << std::endl;*/
-
-		//	sf::Vector2f firstLandedPositon = tetroLandedFirst.getPosition();
-		//	sf::Vector2f secondLandedPositon = tetroLandedSecond.getPosition();
-
-		//	float fixedYpos = firstLandedPositon.y + 2;
-
-		//	float newYPosition = fixedYpos - tetroLandedFirst.getBoundingRect().height;
-		//	secondLandedPositon.y = newYPosition;
-
-		//	sf::FloatRect rect1Bound = tetroLandedFirst.getBoundingRect();
-		//	sf::FloatRect rect2Bound = tetroLandedSecond.getBoundingRect();
-		//	float newTestY = rect1Bound.top - rect2Bound.height;
-
-		//	const float borderDistance = 100.f;
-
-		//	sf::Vector2f position = pair.first->getPosition();
-		//	position.x = std::max(position.x, viewBounds.left + borderDistance);
-		//	position.x = std::min(position.x, viewBounds.left + viewBounds.width - borderDistance);
-		//	position.y = std::max(position.y, viewBounds.top + borderDistance);
-		//	position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
 		else if (matchesCategories(pair, Category::PlayerTetromino, Category::Floor) &&
 			!mPlayerTetromino->isTetrominoGrounded()) {
 			auto& player = static_cast<Tetromino&>(*pair.first);
 			auto& floor = static_cast<GameLimit&>(*pair.second);
 
 			mPlayerTetromino->reachGround();
-
-			addTetromino(Tetromino::T);
+			addTetrominos();
 		}
 		else if (matchesCategories(pair, Category::LandedTetromino, Category::Floor)) {
 			sf::FloatRect viewBounds(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
 			const float borderDistance = 40.f;
 
-			sf::Vector2f position = pair.first->getPosition();
+			/*sf::Vector2f position = pair.first->getPosition();
 			position.x = std::max(position.x, viewBounds.left + borderDistance);
 			position.x = std::min(position.x, viewBounds.left + viewBounds.width - borderDistance);
 			position.y = std::max(position.y, viewBounds.top + borderDistance);
 			position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
-			pair.first->setPosition(position);
+			pair.first->setPosition(position);*/
 		}
 	}
 }
@@ -370,70 +233,28 @@ bool matchesCategories(SceneNode::Pair& colliders, Category::Type type1, Categor
 
 void GameScreen::addTetrominos()
 {
-	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-	mPlayerTetromino = lShape.get();
-	std::unique_ptr<Tetromino> tetromino(new Tetromino(spawn.type));
+	int randomId = rand() % 5 + 1;
 
-		tetromino->setPosition(spawn.x, spawn.y);
-
-		mSceneLayers[Plataform]->attachChild(std::move(tetromino));
-	*/
-	/*std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-	mPlayerTetromino = lShape.get();
-	mPlayerTetromino->setPosition(mSpawnPosition);
-	mSceneLayers[Plataform]->attachChild(std::move(lShape));*/
-	//spawnTetrominos();
-	addTetromino(mPlayerTetromino->L);
-
-	// add random tetrominos
-	//for (auto i = 0; i < tetrominosCounter; i++) {
-	//	int randomId = rand() % 5 + 1;
-
-	//	//if (randomId == Tetromino::L) {
-	//	//	//std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::T));
-	//	//	////mTetrominos.push_back(std::move(lShape));
-	//	//	//sf::Vector2f tetrominoCenter = lShape->findCenter(lShape->mShape);
-	//	//	//sf::Vector2f offsetToCenter = centerScreen - tetrominoCenter;
-	//	//	//sf::Vector2f moveToTop(offsetToCenter.x, offsetToCenter.y - 300.f);
-	//	//	////mSpawnPosition = moveToTop;
-	//	//	//lShape->setPosition(mSpawnPosition);
-
-	//	//	//mSceneLayers[Plataform]->attachChild(std::move(lShape));
-	//	//	addTetromino(Tetromino::L);
-
-	//	//}
-	//	//else if (randomId == Tetromino::T) {
-	//	//	//std::unique_ptr<Tetromino>tShape(new Tetromino(Tetromino::T));
-	//	//	//mTetrominos.push_back(std::move(tShape));
-	//	//	addTetromino(Tetromino::T);
-
-	//	//}
-	//	//else if (randomId == Tetromino::O) {
-	//	//	addTetromino(Tetromino::O);
-	//	//}
-	//	//else if (randomId == Tetromino::S) {
-	//	//	//std::unique_ptr<Tetromino>sShape(new Tetromino(Tetromino::S));
-	//	//	////mTetrominos.push_back(std::move(sShape));
-	//	//	//sShape->setPosition(mSpawnPosition);
-	//	//	//mSceneLayers[Plataform]->attachChild(std::move(sShape));
-	//	//	addTetromino(Tetromino::S);
-	//	//}
-	//	//else if (randomId == Tetromino::Z) {
-	//	//	//std::unique_ptr<Tetromino>zShape(new Tetromino(Tetromino::Z));
-	//	//	////mTetrominos.push_back(std::move(zShape));
-	//	//	//zShape->setPosition(mSpawnPosition);
-	//	//	//mSceneLayers[Plataform]->attachChild(std::move(zShape));
-	//	//	addTetromino(Tetromino::Z);
-	//	//}
-	//	//else {
-	//	//	//std::unique_ptr<Tetromino>lShape(new Tetromino(Tetromino::L));
-	//	//	////mTetrominos.push_back(std::move(lShape));
-	//	//	////lShape->setPosition(mSpawnPosition);
-	//	//	//mPlayerTetromino = lShape.get();
-	//	//	//mSceneLayers[Plataform]->attachChild(std::move(lShape));
-	//	//	addTetromino(Tetromino::L);
-	//	//}
-	//}
+	switch (randomId) {
+		case Tetromino::L:
+			addTetromino(Tetromino::L);
+			break;
+		case Tetromino::T:
+			addTetromino(Tetromino::T);
+			break;
+		case Tetromino::O:
+			addTetromino(Tetromino::O);
+			break;
+		case Tetromino::S:
+			addTetromino(Tetromino::S);
+			break;
+		case Tetromino::Z:
+			addTetromino(Tetromino::Z);
+			break;
+		default:
+			addTetromino(Tetromino::L);
+			break;
+	}
 }
 
 // Only use if you want to change the position of the tetrominos appearing on the view

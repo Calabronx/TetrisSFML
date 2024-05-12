@@ -42,7 +42,7 @@ std::vector<TetrominoData> initializeTetrominoData()
 
 	data[Tetromino::T].vertices = tVertices;
 
-	sf::Vertex squareShapeVrtx1(sf::Vector2f(25, 25), sf::Color::Yellow);
+	/*sf::Vertex squareShapeVrtx1(sf::Vector2f(25, 25), sf::Color::Yellow);
 	sf::Vertex squareShapeVrtx2(sf::Vector2f(0, 50), sf::Color::Yellow);
 	sf::Vertex squareShapeVrtx3(sf::Vector2f(50, 50), sf::Color::Yellow);
 	sf::Vertex squareShapeVrtx4(sf::Vector2f(50, 0), sf::Color::Yellow);
@@ -50,13 +50,24 @@ std::vector<TetrominoData> initializeTetrominoData()
 
 	sf::Vertex squareShapeVrtx6(sf::Vector2f(0, 50), sf::Color::Yellow);
 	sf::Vertex squareShapeVrtx7(sf::Vector2f(50, 50), sf::Color::Yellow);
-	sf::Vertex squareShapeVrtx8(sf::Vector2f(50, 0), sf::Color::Yellow);
+	sf::Vertex squareShapeVrtx8(sf::Vector2f(50, 0), sf::Color::Yellow);*/
 
-	std::array<sf::Vertex, 8> squareVertices = {
+	/*std::array<sf::Vertex, 8> squareVertices = {
 		squareShapeVrtx1, squareShapeVrtx2, squareShapeVrtx3,
 		squareShapeVrtx4, squareShapeVrtx5, squareShapeVrtx6,
 		squareShapeVrtx7, squareShapeVrtx8
+	};*/
+
+	sf::Vertex squareShapeVrtx1(sf::Vector2f(0.f, 0.f), sf::Color::Yellow);
+	sf::Vertex squareShapeVrtx2(sf::Vector2f(50.f, 0.f), sf::Color::Yellow);
+	sf::Vertex squareShapeVrtx3(sf::Vector2f(50.f, 50.f), sf::Color::Yellow);
+	sf::Vertex squareShapeVrtx4(sf::Vector2f(0.f, 50.f), sf::Color::Yellow);
+
+	std::array<sf::Vertex, 8> squareVertices = {
+		squareShapeVrtx1, squareShapeVrtx2, squareShapeVrtx3,
+		squareShapeVrtx4
 	};
+	
 
 	data[Tetromino::O].vertices = squareVertices;
 

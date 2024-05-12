@@ -58,7 +58,7 @@ class GameScreen : private sf::NonCopyable
 					float y;
 			};
 
-			struct GameLimit : public Entity // deberia analizar si es necesario heredar de Entity
+			struct GameLimit : public Entity 
 			{
 				GameLimit(sf::FloatRect rect,Category::Type type)
 					:rect(rect),type(type)

@@ -52,7 +52,6 @@ class Tetromino : public Entity
 			sf::Vector2f					mCenter;
 			sf::Color						mColor;
 			Type							mType;
-			Category::Type					mCategory;
 			float							mAngle;
 			bool							mIsGrounded;
 
