@@ -10,7 +10,7 @@
 class Tetromino;
 
 struct TetrominoData {
-		std::array<sf::Vertex, 8> vertices;
+		std::array<sf::Vertex, 16> vertices;
 		sf::Color color;
 		int lifes;
 };

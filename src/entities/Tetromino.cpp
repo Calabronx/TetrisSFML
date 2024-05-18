@@ -1,20 +1,22 @@
 #include "Tetromino.h"
 #include "../util/DataTables.h"
+#include <iostream>
 
 namespace {
 	const std::vector<TetrominoData> TetrominoTable = initializeTetrominoData();
 }
 
 Tetromino::Tetromino(Type type)
-	: mShape(sf::TriangleFan)
+	: mShape(sf::Quads)
 	, mType(type)
 	, mRotation()
-	, mAngle(180.0f)
+	, mAngle(0.0f)
 	, mIsGrounded(false)
 	, mVertices(TetrominoTable[type].vertices)
 {
 	sf::Vector2f min(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 	sf::Vector2f max(std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
+
 
 	/**
 	* calcular el transform de cada vertice y construir un rectanculo exacto de su forma
@@ -29,21 +31,23 @@ Tetromino::Tetromino(Type type)
 
 	**/
 	sf::Vector2f vertexPos;
+	/*if (mType == Z) {
+		setShapeType(sf::Quads);
+	}
+	else {
+		setShapeType(sf::Points);
+	}*/
 	for (auto i = 0; i < mVertices.size(); i++) {
 		mShape.append(mVertices[i]);
-		mCenter = findCenter(mShape);
-		setRotation(mAngle);
+		//setRotation(mAngle);
 		vertexPos = mVertices[i].position;
-
-		/*min.x = std::min(min.x, vertexPos.x);
-		min.y = std::min(min.y, vertexPos.y);
-		max.x = std::max(max.x, vertexPos.x);
-		max.y = std::max(max.y, vertexPos.y);*/
 	}
+	mCenter = findCenter(mShape);
 	sf::Transform transform = getTransform();
 	//sf::Vector2f point = transform.transformPoint(vertexPos.x, vertexPos.y);
 
 	sf::FloatRect tetrominoRect = transform.transformRect(mShape.getBounds());
+	//sf::FloatRect tetrominoRect = getBoundingBox();
 	setOrigin(tetrominoRect.width / 2.f, tetrominoRect.height / 2.f);
 }
 
@@ -54,13 +58,15 @@ void Tetromino::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) c
 
 void Tetromino::rotate()
 {
-	if (mAngle == 0.0f || mAngle == 90.0f || mAngle == 180 || mAngle == 270.0f) {
-		mAngle += 90.0f;
+	if (mType != O) {
+		if (mAngle == 0.0f || mAngle == 90.0f || mAngle == 180 || mAngle == 270.0f) {
+			mAngle += 90.0f;
+		}
+		else {
+			mAngle = 90.0f;
+		}
+		setRotation(mAngle);
 	}
-	else {
-		mAngle = 90.0f;
-	}
-	setRotation(mAngle);
 }
 
 void Tetromino::destroy()
@@ -91,6 +97,27 @@ sf::Vector2f Tetromino::getCenter() const
 	return mCenter;
 }
 
+sf::FloatRect Tetromino::getBoundingBox() const
+{
+	if(mShape.getVertexCount() == 0)
+		return sf::FloatRect();
+
+	float minX = mShape[0].position.x;
+	float minY = mShape[0].position.y;
+	float maxX = mShape[0].position.x;
+	float maxY = mShape[0].position.y;
+
+	for (std::size_t i = 1; i < mShape.getVertexCount(); ++i) {
+		const auto& pos = mShape[i].position;
+		minX = std::min(minX, pos.x);
+		minY = std::min(minY, pos.y);
+		maxX = std::max(maxX, pos.x);
+		maxY = std::max(maxY, pos.y);
+	}
+
+	return sf::FloatRect(minX, minY, maxX - minX, maxY - minY);
+}
+
 void Tetromino::setCenter(sf::Vector2f& center)
 {
 	mCenter = center;
@@ -99,6 +126,11 @@ void Tetromino::setCenter(sf::Vector2f& center)
 bool Tetromino::isTetrominoGrounded() const
 {
 	return mIsGrounded;
+}
+
+void Tetromino::setShapeType(sf::PrimitiveType shapeType)
+{
+	mShape.setPrimitiveType(shapeType);
 }
 
 
@@ -131,16 +163,16 @@ unsigned int Tetromino::getCategory() const
 	// piezas que se mueven, no enemigos. Quizas podria identificar piezas que tocaron el suelo para dividirlas de las que se mueven
 	switch (mType)
 	{
-		case L:
-		case T:
-		case O:
-		case S:
-		case Z:
-			if (!mIsGrounded) {
-				return Category::PlayerTetromino;
-			}
-			return Category::LandedTetromino;
-
+	case L:
+	case T:
+	case O:
+	case S:
+	case Z:
+		if (!mIsGrounded) {
+			return Category::PlayerTetromino;
 		}
+		return Category::LandedTetromino;
+
+	}
 	return 0;
 }

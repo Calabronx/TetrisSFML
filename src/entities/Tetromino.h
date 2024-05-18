@@ -29,7 +29,7 @@ class Tetromino : public Entity
 			virtual void								drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 			sf::Transform					mRotation;
 			sf::VertexArray					mShape;
-			std::array<sf::Vertex, 8>		mVertices;
+			std::array<sf::Vertex, 16>		mVertices;
 
 			void						rotate();
 			void						destroy();
@@ -38,9 +38,11 @@ class Tetromino : public Entity
 
 
 			sf::Vector2f		getCenter() const;
+			sf::FloatRect		getBoundingBox() const;
 			void				setCenter(sf::Vector2f& center);
 			bool				isTetrominoGrounded() const;
-			void				setCategory(Category::Type type);
+			//void				setCategory(Category::Type type);
+			void				setShapeType(sf::PrimitiveType shapeType);
 	
 			virtual sf::FloatRect getBoundingRect() const;
 		private:

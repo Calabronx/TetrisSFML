@@ -94,7 +94,7 @@ void GameScreen::buildScene()
 	mFloorLimit->setPosition(0.f, 1960);
 
 	mSceneLayers[Plataform]->attachChild(std::move(floorLimit));
-	std::unique_ptr<Tetromino> tetromino(new Tetromino(Tetromino::L));
+	std::unique_ptr<Tetromino> tetromino(new Tetromino(Tetromino::T));
 
 	tetromino->setPosition(mSpawnPosition.x, mSpawnPosition.y);
 
@@ -173,8 +173,8 @@ void GameScreen::handleCollisions()
 
 	floorLimit->setPosition(0.f, 1960);
 
-	bool test = mPlayerTetromino->getBoundingRect().intersects(floorLimit->getBoundingRect());
-	auto cat = floorLimit->type;
+	/*bool test = mPlayerTetromino->getBoundingRect().intersects(floorLimit->getBoundingRect());
+	auto cat = floorLimit->type;*/
 
 	for (SceneNode::Pair pair : collisionPairs)
 	{
@@ -236,24 +236,24 @@ void GameScreen::addTetrominos()
 	int randomId = rand() % 5 + 1;
 
 	switch (randomId) {
-		case Tetromino::L:
-			addTetromino(Tetromino::L);
-			break;
-		case Tetromino::T:
-			addTetromino(Tetromino::T);
-			break;
-		case Tetromino::O:
-			addTetromino(Tetromino::O);
-			break;
-		case Tetromino::S:
-			addTetromino(Tetromino::S);
-			break;
-		case Tetromino::Z:
-			addTetromino(Tetromino::Z);
-			break;
-		default:
-			addTetromino(Tetromino::L);
-			break;
+	case Tetromino::L:
+		addTetromino(Tetromino::L);
+		break;
+	case Tetromino::T:
+		addTetromino(Tetromino::T);
+		break;
+	case Tetromino::O:
+		addTetromino(Tetromino::O);
+		break;
+	case Tetromino::S:
+		addTetromino(Tetromino::S);
+		break;
+	case Tetromino::Z:
+		addTetromino(Tetromino::Z);
+		break;
+	default:
+		addTetromino(Tetromino::L);
+		break;
 	}
 }
 
