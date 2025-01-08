@@ -17,38 +17,22 @@ Tetromino::Tetromino(Type type)
 	sf::Vector2f min(std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 	sf::Vector2f max(std::numeric_limits<float>::min(), std::numeric_limits<float>::min());
 
-
-	/**
-	* calcular el transform de cada vertice y construir un rectanculo exacto de su forma
-	*
-	* begin
-	*		sumar todos los vertices
-	*		obtener transform
-			transformar punto del vertice y asignar a un vector
-			definir float rect con parametros del vector de vertices
-			setear parametros al origin del tetromino
-		end
-
-	**/
-	sf::Vector2f vertexPos;
-	/*if (mType == Z) {
-		setShapeType(sf::Quads);
-	}
-	else {
-		setShapeType(sf::Points);
-	}*/
 	for (auto i = 0; i < mVertices.size(); i++) {
 		mShape.append(mVertices[i]);
-		//setRotation(mAngle);
-		vertexPos = mVertices[i].position;
 	}
 	mCenter = findCenter(mShape);
-	sf::Transform transform = getTransform();
-	//sf::Vector2f point = transform.transformPoint(vertexPos.x, vertexPos.y);
 
-	sf::FloatRect tetrominoRect = transform.transformRect(mShape.getBounds());
-	//sf::FloatRect tetrominoRect = getBoundingBox();
-	setOrigin(tetrominoRect.width / 2.f, tetrominoRect.height / 2.f);
+	//adjustBoundingBox();
+
+	setRotation(mAngle);
+
+	mRects = constructRectListFromVertices(mShape);
+	mGlobalRect = getBoundingBox(mRects);
+
+	sf::Transform transform = getTransform();
+	sf::FloatRect tetrominoRectTest = transform.transformRect(mShape.getBounds());
+	sf::FloatRect tetrominoRect = transform.transformRect(mGlobalRect);
+	setOrigin(tetrominoRect.width / 2, tetrominoRect.height / 2);
 }
 
 void Tetromino::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
@@ -59,11 +43,9 @@ void Tetromino::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) c
 void Tetromino::rotate()
 {
 	if (mType != O) {
-		if (mAngle == 0.0f || mAngle == 90.0f || mAngle == 180 || mAngle == 270.0f) {
-			mAngle += 90.0f;
-		}
-		else {
-			mAngle = 90.0f;
+		mAngle += 90.0f;
+		if (mAngle >= 360.0f) {
+			mAngle -= 360.0f;
 		}
 		setRotation(mAngle);
 	}
@@ -96,31 +78,63 @@ sf::Vector2f Tetromino::getCenter() const
 {
 	return mCenter;
 }
+/**
+	construir un float rect en base un vector que contiene 4 rects, cada rect cuenta con 4 vertices
 
-sf::FloatRect Tetromino::getBoundingBox() const
+	begin
+		obtengo el width del primer rect
+		obtengo el height del primer rect
+
+		por cada rect a partir del segundo de la lista itero
+			obtengo la posicion del rect segun index
+
+**/
+sf::FloatRect Tetromino::getBoundingBox(std::vector<sf::FloatRect> rects) const
 {
-	if(mShape.getVertexCount() == 0)
+	if (rects.size() == 0)
 		return sf::FloatRect();
 
-	float minX = mShape[0].position.x;
-	float minY = mShape[0].position.y;
-	float maxX = mShape[0].position.x;
-	float maxY = mShape[0].position.y;
+	float left = rects[0].left;
+	float top = rects[0].top;
+	float right = rects[0].left + rects[0].width;
+	float bottom = rects[0].top + rects[0].height;
 
-	for (std::size_t i = 1; i < mShape.getVertexCount(); ++i) {
-		const auto& pos = mShape[i].position;
-		minX = std::min(minX, pos.x);
-		minY = std::min(minY, pos.y);
-		maxX = std::max(maxX, pos.x);
-		maxY = std::max(maxY, pos.y);
+	for (std::size_t i = 1; i < rects.size(); ++i) {
+		float currentLeft = rects[i].left;
+		float currentTop = rects[i].top;
+		float currentRight = rects[i].left + rects[i].width;
+		float currentBottom = rects[i].top + rects[i].height;
+
+		if (currentLeft < left) left = currentLeft;
+		if (currentTop > top) top = currentTop;
+		if (currentRight < right) right = currentRight;
+		if (currentBottom > bottom) bottom = currentBottom;
 	}
+	return sf::FloatRect(left, top, right - left, bottom - top);
+}
 
-	return sf::FloatRect(minX, minY, maxX - minX, maxY - minY);
+void Tetromino::adjustBoundingBox()
+{
+	//sf::FloatRect boundingBox = getBoundingBox();
+
+	//sf::Vector2f center(boundingBox.left + boundingBox.width / 2.f, boundingBox.top + boundingBox.height / 2.f);
+
+	//setOrigin(center);
+
+	//for (std::size_t i = 0; i < mShape.getVertexCount(); ++i) {
+	//	mShape[i].position -= center;
+	//}
+
 }
 
 void Tetromino::setCenter(sf::Vector2f& center)
 {
 	mCenter = center;
+}
+
+void Tetromino::setGlobalRect(sf::FloatRect globalRect)
+{
+	mGlobalRect = globalRect;
 }
 
 bool Tetromino::isTetrominoGrounded() const
@@ -133,11 +147,66 @@ void Tetromino::setShapeType(sf::PrimitiveType shapeType)
 	mShape.setPrimitiveType(shapeType);
 }
 
+//sf::FloatRect createFloatRectFromVertices(const std::vector<sf::Vertex>& vertices) {
+//	if (vertices.empty()) {
+//		return sf::FloatRect();
+//	}
+//
+//	float minX = vertices[0].position.x;
+//	float minY = vertices[0].position.y;
+//	float maxX = vertices[0].position.x;
+//	float maxY = vertices[0].position.y;
+//
+//	for (const auto& vertex : vertices) {
+//		if (vertex.position.x < minX) minX = vertex.position.x;
+//		if (vertex.position.x > maxX) maxX = vertex.position.x;
+//		if (vertex.position.y < minY) minY = vertex.position.y;
+//		if (vertex.position.y > maxY) maxY = vertex.position.y;
+//	}
+//
+//	return sf::FloatRect(minX, minY, maxX - minX, maxY - minY);
+//}
 
 sf::FloatRect Tetromino::getBoundingRect() const
 {
-	return getWorldTransform().transformRect(mShape.getBounds());
+	return getWorldTransform().transformRect(mGlobalRect);
 }
+
+/**
+	begin
+
+			por cada vertice del arr
+				si el indice es mayor o igual que 4 y el indice es modulo de 4
+**/
+
+std::vector<sf::FloatRect> Tetromino::constructRectListFromVertices(const sf::VertexArray& vertexArr)
+{
+	if (vertexArr.getVertexCount() == 0) {
+		return std::vector<sf::FloatRect>();
+	}
+
+	int index = 0;
+	sf::VertexArray tempVertices(sf::Quads, 4);
+	std::vector<sf::FloatRect> tetroShapes;
+	for (std::size_t i = 0; i <= vertexArr.getVertexCount(); i++) { // hacer que el index sea <= que la cantidad de vertices esta COMO EL ORTO, pero bueno...
+		if (i % 4 == 0 && i >= 4) {
+			sf::FloatRect tempRect = tempVertices.getBounds();
+			tetroShapes.push_back(tempRect);
+			tempVertices.clear();
+			tempVertices.resize(4);
+			tempVertices.setPrimitiveType(sf::Quads);
+			index = 0;
+		}
+		else {
+			sf::Vertex vertex = vertexArr[i];
+			sf::Vector2f vecArr(vertex.position.x, vertex.position.y);
+			tempVertices[index].position = vecArr;
+			index++;
+		}
+	}
+	return tetroShapes;
+}
+
 
 //void Tetromino::updateCurrent(sf::Time dt, CommandQueue& commands)
 //{

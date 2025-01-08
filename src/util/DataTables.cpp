@@ -35,10 +35,49 @@ std::vector<TetrominoData> initializeTetrominoData()
 		l13, l14, l15, l16
 	};
 
+	std::vector<sf::Vertex> firstSquare;
+	firstSquare.push_back(l1);
+	firstSquare.push_back(l2);
+	firstSquare.push_back(l3);
+	firstSquare.push_back(l4);
 
+	float minX = firstSquare[0].position.x;
+	float maxX = firstSquare[0].position.x;
+	float minY = firstSquare[0].position.y;
+	float maxY = firstSquare[0].position.y;
+
+	sf::RectangleShape rect(sf::Vector2f(maxX - minX, maxY - minY));
+	rect.setPosition(minX, minY);
+	rect.setOutlineColor(sf::Color::Red);
+	rect.setOutlineThickness(1);
+	rect.setFillColor(sf::Color::Transparent);
+
+	//sf::VertexArray test(sf::Quads, 4);
+	//test.append(l1);
+	//test.append(l2);
+	//test.append(l3);
+	//test.append(l4);
+	//data[Tetromino::L].tetroSquares.push_back(test);
 	data[Tetromino::L].vertices = lVertices;
 
-	// Izquierda
+	/*if (vertices.empty()) {
+		return sf::FloatRect();
+	}*/
+
+	/*float minX = lVertices[0].position.x;
+	float minY = lVertices[0].position.y;
+	float maxX = lVertices[0].position.x;
+	float maxY = lVertices[0].position.y;
+
+	for (const auto& vertex : lVertices) {
+		if (vertex.position.x < minX) minX = vertex.position.x;
+		if (vertex.position.x > maxX) maxX = vertex.position.x;
+		if (vertex.position.y < minY) minY = vertex.position.y;
+		if (vertex.position.y > maxY) maxY = vertex.position.y;
+	}*/
+
+
+		// Izquierda
 
 	sf::Vertex t1(sf::Vector2f(0, 0), sf::Color::White);
 	sf::Vertex t2(sf::Vector2f(23.5f, 0.f), sf::Color::Blue);

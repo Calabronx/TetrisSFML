@@ -30,6 +30,7 @@ class Tetromino : public Entity
 			sf::Transform					mRotation;
 			sf::VertexArray					mShape;
 			std::array<sf::Vertex, 16>		mVertices;
+			std::vector<sf::FloatRect>		mRects;
 
 			void						rotate();
 			void						destroy();
@@ -38,8 +39,10 @@ class Tetromino : public Entity
 
 
 			sf::Vector2f		getCenter() const;
-			sf::FloatRect		getBoundingBox() const;
+			sf::FloatRect		getBoundingBox(std::vector<sf::FloatRect> rects) const;
+			void				adjustBoundingBox();
 			void				setCenter(sf::Vector2f& center);
+			void				setGlobalRect(sf::FloatRect globalRect);
 			bool				isTetrominoGrounded() const;
 			//void				setCategory(Category::Type type);
 			void				setShapeType(sf::PrimitiveType shapeType);
@@ -47,12 +50,14 @@ class Tetromino : public Entity
 			virtual sf::FloatRect getBoundingRect() const;
 		private:
 			//virtual void updateCurrent(sf::Time dt, CommandQueue& commands);
+			std::vector<sf::FloatRect>constructRectListFromVertices(const sf::VertexArray& vertexArr);
 
 
 		private:
 			sf::Vector2f					mSize;
 			sf::Vector2f					mCenter;
 			sf::Color						mColor;
+			sf::FloatRect					mGlobalRect;
 			Type							mType;
 			float							mAngle;
 			bool							mIsGrounded;
